@@ -1,0 +1,1282 @@
+#
+# $URL$
+# $Id$
+
+echo "Loading $HOME/.zsh/completions"
+
+#-----------------------------------------------------------------
+# 基本的な補完対象
+#-----------------------------------------------------------------
+
+# -f    ファイル名/ディレクトリ名
+# -/    パス名
+# -c    コマンド名( alias, function, builtin, 予約名 も含む )
+#   -F  function 名
+#   -B  内部コマンド名(builtins)
+#   -m  外部コマンド名
+#   -w  予約名
+#   -a  alias 名
+# -o    zsh option 名
+# -v    シェル変数および環境変数
+#   -E  環境変数 (export されているもの)
+# -j    ジョブ名 (ジョブの最初のコマンド名)
+#   -r  動作中のジョブ名
+#   -z  サスペンド中のジョブ名
+# -u    ユーザ名
+# -A    配列名
+
+#-----------------------------------------------------------------
+# 特殊な補完対象
+#-----------------------------------------------------------------
+
+# -k <配列>            補完リストによる
+# -g <ファイル名展開>  (*/) など
+# -s <substring>       man zshexpn による方法で <substring> を展開
+# -K <function>        <function> 内で設定される配列 reply 
+
+#-----------------------------------------------------------------
+# 補完指定の前に付けるもの
+#-----------------------------------------------------------------
+
+# -Q          補完を quote しない
+# -P <文字列> 補完が成功したら <文字列> を頭に付ける
+# -S <文字列> 補完が成功したら <文字列> を最後に付ける
+# -X <説明>   説明を表示するし、マッチしたものの数は %n で表現
+
+#-----------------------------------------------------------------
+# 拡張補完 (-x)
+#-----------------------------------------------------------------
+
+# -x '<パターン1>' <補完指定1> - '<パターン2>' <補完指定2> .. -- とする
+
+# パターン
+# s[<文字列>]            現在の単語が <文字列> で始まるなら <補完>
+#                        s[<文字列1>][<文字列2>] なら、どっちか
+# S[<文字列>]            s と同じだが、<文字列> も補完対象になる
+# p[<pos>]               現在の単語が <pos> 番目にあるなら <補完>
+# p[<from>,<to>]         現在の単語が <from> 番目から <to> 番目中なら <補完>
+# c[<offset>,<文字列>]   現在の単語から <offset> 番目が <文字列> なら <補完>
+# C[<offset>,<パターン>] c と同じだが、<パターン> を使う
+# w[<index>,<文字列>]    <index> 番目の単語が <文字列> なら <補完>
+# W[<index>,<パターン>]  <index> 番目の単語が <パターン> なら <補完>
+# m[<min>,<max>]         単語数が <min> から <max> なら <補完>
+# r[<文字列1>,<文字列2>] カーソルが <文字列1> と <文字列2> の間なら <補完>
+# R[<パタ1>,<パタ2>]     r と同じだが <パターン> を使う
+
+### 設定内容の確認
+
+# compctl -L <command> で現在 <command> に設定されている内容がわかる
+# compctl -L 現在の設定をそのまま復活させるための出力が出る
+# compctl で、現在設定されている全ての内容がわかる
+
+
+#-----------------------------------------------------------------
+# デフォルトの動作 (-D -C -T)
+#-----------------------------------------------------------------
+
+# コマンド直後ではファイル名・ディレクトリ名を補完
+
+compctl -D -f
+
+# 何も入力していないときはコマンド名で補完
+# コマンド名に補完候補がなければ環境変数で補完し、成功なら末尾に = を付加
+
+compctl -C -c -f + -E -q -S '='
+
+# どんなコマンド名のときも、-fn のあとはフォントリストから補完
+
+compctl -Tx 'c[-1,-fn]' -K _getfontlist
+
+
+#-----------------------------------------------------------------
+# zsh 内部コマンド (builtins)
+#-----------------------------------------------------------------
+
+# cd は * にマッチするディレクトリかディレクトリへのリンクを補完
+# 失敗したら .* にマッチするディレクトリかディレクトリへのリンクを補完
+
+compctl -g '*(-/)' + -g '.*(/)' cd chdir dirs pushd rmdir dircmp
+#compctl -/ cd chdir dirs pushd
+#compctl -/g '*(/)' rmdir dircmp
+
+# cd/pushd only directories or symbolic links to directories
+#compctl -g '*(-/)' cd pushd
+
+# alias/unalias は alias 名、setopt/unsetopt には options など
+
+compctl -a alias unalias
+
+compctl -j -P '%' fg jobs disown
+compctl -z -P '%' bg
+
+compctl -A shift
+compctl -F functions unfunction
+compctl -caF type whence where which
+compctl -v getln getopts read unset vared
+compctl -k "(${(j: :)${(f)$(limit)}%% *})" limit unlimit
+compctl -s '$(setopt 2>/dev/null)' + -o + -x 's[no]' -o -- unsetopt
+compctl -s '$(unsetopt 2>/dev/null)' + -o + -x 's[no]' -o -- setopt
+compctl -s '${^fpath}/*(N:t)' autoload
+
+# kill は PID またはジョブ名から補完
+
+#if [ $SYSTEM != sol -a $SYSTEM != sgi ]; then
+#  pscmd='ps -e'
+#else
+#  pscmd='ps x'
+#fi
+pscmd='ps x'
+
+compctl -j -P '%' + -s '`$pscmd | tail +2 | cut -c1-5`' wait
+compctl -j -P '%' + -s '`$pscmd | tail +2 | cut -c1-5`' + \
+	-x 's[-] p[1]' -k "($signals[1,-3])" -- kill
+
+# export は環境変数で補完し、成功したら = を末尾に付ける
+# 現在の単語が XMODIFIERS= なら @im=kinput2 もしくは @im=vje を補完候補にする
+
+compctl -E -S '=' \
+  -Q -x 's[XMODIFIERS=]' -Q -k '( @im=kinput2 @im=vje @im=_XWNMO )' \
+  -- export
+
+# Completion for zsh builtins.
+compctl -z -P '%' bg
+compctl -j -P '%' fg jobs disown
+compctl -j -P '%' + -s '`ps x | tail +2 | cut -c1-5`' wait
+compctl -A shift
+compctl -caF type whence which where
+compctl -c unhash
+compctl -x 'w[1,-d] p[2]' -n - 'w[1,-d] p[3]' -g '*(-/)' - \
+	'p[1]' -c - 'p[2]' -g '*(-x)' -- hash
+compctl -F functions unfunction
+#compctl -k '(al dc dl do le up al bl cd ce cl cr
+#      dc dl do ho is le ma nd nl se so up)' echotc
+compctl -a unalias
+compctl -v getln getopts read unset vared
+compctl -v -S '=' -q declare export integer local readonly typeset
+compctl -eB -x 'p[1] s[-]' -k '(a f m r)' - \
+	'C[1,-*a*]' -ea - 'C[1,-*f*]' -eF - 'C[-1,-*r*]' -ew -- disable
+compctl -dB -x 'p[1] s[-]' -k '(a f m r)' - \
+	'C[1,-*a*]' -da - 'C[1,-*f*]' -dF - 'C[-1,-*r*]' -dw -- enable
+compctl -k "(`limit | cut -d' ' -f1`)" limit unlimit
+compctl -l '' -x 'p[1]' -f -- . source
+# Redirection below makes zsh silent when completing unsetopt xtrace
+compctl -s '$(setopt 2>/dev/null)' + -s 'no${=^$(unsetopt)}' + -o unsetopt
+compctl -s '$(unsetopt)' + -s 'no${=^$(setopt 2>/dev/null)}' + -o setopt
+compctl -s '${^fpath}/*(N:t)' autoload
+compctl -b bindkey
+compctl -c -x 'C[-1,-*k]' -A - 'C[-1,-*K]' -F -- compctl
+compctl -x 'C[-1,-*e]' -c - 'C[-1,-[ARWI]##]' -f -- fc
+compctl -x 'p[1]' - 'p[2,-1]' -l '' -- sched
+compctl -x 'C[-1,[+-]o]' -o - 'c[-1,-A]' -A -- set
+compctl -b -x 'w[1,-N] p[3]' -F -- zle
+compctl -s '${^module_path}/*(N:t:r)' -x \
+	'W[1,-*(a*u|u*a)*],W[1,-*a*]p[3,-1]' -B - \
+	'W[1,-*u*]' -s '$(zmodload)' -- zmodload
+
+# Anything after nohup is a command by itself with its own completion
+compctl -l '' nohup noglob exec nice eval - time rusage
+compctl -l '' -x 'p[1]' -eB -- builtin
+compctl -l '' -x 'p[1]' -em -- command
+compctl -x 'p[1]' -c - 'p[2,-1]' -k signals -- trap
+
+
+#-----------------------------------------------------------------
+# 各コマンドの設定
+#-----------------------------------------------------------------
+
+#----------------------
+# sound
+#----------------------
+
+compctl -g '*.[mM][pP]3 *(-/)' mpg123 amp
+
+
+#----------------------
+# etc.
+#----------------------
+
+compctl -u id finger rmuser passwd
+
+#compctl -K _user_tty write talk
+compctl -u -K _user_tty write talk
+
+
+function _user_tty () {
+  reply=( `who | awk '{print $2}'` )
+}
+
+compctl -g '*(-/) *.c' lint
+
+
+compctl -caFu psg
+
+compctl -m -f sudo 
+
+#----------------------
+# mysql
+#----------------------
+
+compctl -x 'c[-1,-u]' -u -- mysql mysql4
+
+compctl -k '(create drop extended-status flush-hosts flush-logs flush-tables flush-privileges \
+	kill password ping processlist reload refresh shutdown status variables version)' mysqladmin myadmin mysqladmin4
+
+#----------------------
+# apache
+#----------------------
+
+compctl -k '(configtest fullstatus help graceful restart start startssl status stop)' apachectl 
+
+#----------------------
+# named
+#----------------------
+
+compctl -k '(reload refresh stats querylog dumpdb stop halt)' ndc rndc
+
+#----------------------
+# ssh
+#----------------------
+
+#compctl -K _sshhosts \
+#        -x 'n[-1,-type=]' -k '(A CNAME HINFO MINFO MX NS PTR SOA TXT UINFO WKS)'  -- nslookup   
+
+compctl -K _sshhosts \
+	-x 's[-type=]' -k '(A CNAME HINFO MINFO MX NS PTR SOA TXT UINFO WKS)'  -- nslookup
+
+#compctl -K _sshhosts nslookup
+
+#----------------------
+# openssl
+#----------------------
+
+compctl -k '(asn1parse ca ciphers crl crl2pkcs7 dgst dh dhparam dsa dsaparam \
+	enc errstr gendh gendsa genrsa nseq passwd pkcs12 pkcs7 pkcs8 \
+	rand req rsa rsautl s_client s_server s_time sess_id smime speed \
+	spkac verify version x509)' openssl
+
+#----------------------
+# screen
+#----------------------
+
+compctl -K _screens screen
+
+functions _screens () {
+        reply=(`screen -ls | grep 'tached'  | sed -e 's/	//' | sed -e 's/	.*//' `)
+}
+
+#----------------------
+# process
+#----------------------
+
+compctl -x 'c[-1,-U]' -u -- top
+#compctl -x 'c[-1,-U]' -u -x 'c[-1,-o]' -k '(cpu size res time pri)' -- top
+
+#----------------------
+# systat
+#----------------------               
+
+compctl -k '(-pigs -icmp -tcp -ip -iostat -swap -mbufs -vmstat -netstat)' systat
+
+#----------------------
+# sysctl
+#----------------------
+
+compctl -K _sysctl sysctl
+
+function _sysctl () {
+    reply=( ` sysctl -a | egrep -v '^[\s\t\<]' | egrep '^.+: ' |cut -d: -f1`)
+}
+
+#----------------------
+# network tools
+#----------------------
+
+compctl -K _sshhosts  ping traceroute telnet nmap remotestat pathchar host strobe tracepath
+compctl -K _portnum portstat
+
+function _portnum () {
+  reply=(` netstat -na|grep ' \*.\* '|egrep ' \*.[1-9]+' | awk '{print $4}'|sed -e 's/\*.//g' `)
+}
+
+compctl -x 'c[-1,-i]' -K _ifselect --  ifconfig trafshow ntop
+
+function _ifselect () {
+#  reply=( ` ifconfig -a | egrep '^[^#. ][^=       ]*:' | cut -d: -f1 ` )
+  reply=( ` ifconfig -a | egrep '^[^#. 	]*:' | cut -d: -f1 ` )
+}
+
+
+#----------------------
+# ncftp
+#----------------------
+
+compctl -K _ncftphosts  -x 'c[-1,-u]' -u -- ncftp
+
+function _ncftphosts () {   
+  reply=( ` tail +3 ~/.ncftp/bookmarks | cut -d',' -f1 `)
+}
+
+#----------------------
+# archiver & compress
+#----------------------
+
+compctl -g '*(-/) *.gz *.tgz *.z *.Z' gunzip zcat zmore zgrep
+compctl -g '*(-/) *.bz2' bunzip2
+
+# gzip uncompressed files, but gzip -d only gzipped or compressed files
+compctl -x 'R[-*[dt],^*]' -g '*.(gz|z|Z|t[agp]z|tarZ|tz)' + -g '*(-/)' + -f - \
+    's[]' -g '^*(.(tz|gz|t[agp]z|tarZ|zip|ZIP|jpg|JPG|gif|GIF|[zZ])|[~#])' \
+    + -f -- gzip
+#compctl -g '*.(gz|z|Z|t[agp]z|tarZ|tz)' + -g '*(-/)' gunzip # zcat if you use GNU
+#compctl -g '*.Z' + -g '*(-/)' uncompress zmore  # zcat if you don't use GNU
+
+#compctl -g '*.F' + -g '*(-/)' melt fcat
+# archivers from DOS
+compctl -f -x 'p[1,2]' \
+        -g "*(-/) *.[Ll][Zz][Hh] *.[Ee][Xx][Ee]"        -- lha lhp
+compctl -f -x 'p[1]' -g "*(-/) *.[Aa][Rr][Cc]"          -- arc
+compctl -f -x 'p[1,2]' -g "*(-/) *.[Zz][Ii][Pp]"        -- zip unzip
+compctl -f -x 'p[1,2]' -g "*(-/) *.[Aa][Rr][Jj]"        -- unarj
+compctl -g "*(-/) *.(Z|z|gz)"                           zless zgrep zcmp
+
+#----------------------
+# fd
+#----------------------
+
+#compctl -g '*(-/)' fd
+
+#----------------------
+# perl
+#----------------------
+
+compctl -g '*(-/) *.pl *.PL *.ph *.cgi *.pm *.PM *.t *.xpl' perl miniperl
+
+compctl -g '*(-/) *.pl *.PL *.pm *.PM *.pod' -K _perl_inc perldoc pod
+
+compctl -K _perl_inc corelist corelist.pl
+
+#----------------------
+# pkg
+#----------------------
+
+compctl -g '*(-/) *.tgz *.tbz' pkg_add
+compctl -g '/var/db/pkg/*(/:t)' pkg_info pkg_delete
+
+
+#----------------------
+# find
+#----------------------
+
+compctl -g "*(-/)" -x \
+    's[-]' -k '(fstype name perm prune type user nouser group nogroup size \
+        inum atime mtime ctime exec ok print ls cpio ncpio newer \
+        xdev depth)' - \
+    'c[-1,-type]' -k '(c b d f p l s)' - 'c[-1,-user]' -u - \
+    'r[-exec,;][-ok,;]' -l ''           -- find
+
+#----------------------
+# print etc.
+#----------------------
+
+# jlatex pkatex latex はディレクトリかディレクトリへのリンクか *.tex
+# dvi2ps xdvi dvi2tty jdvi2kps は ディレクトリかディレクトリへのリンクか *.dvi
+# gv は ディレクトリかディレクトリへのリンクか *.ps *.PS ... のいずれか
+
+compctl -g '*(-/) *.tex*' {,p,j}latex texi2dvi
+compctl -g '*(-/) *.dvi' xdvi dvi2{ps,tty} jdvi2kps dvipdf dvipdfm dvipdfmx
+compctl -g '*(-/) *.ps *.PS *.eps *.epsi *.pdf *.PDF *.jpdf *.JPDF' gv
+
+
+
+#----------------------
+# dd
+#----------------------
+
+# if= of= bs= skip= count= を補完候補にし、成功しても最後にスペースを入れない
+# 現在の単語が if= もしくは of= で始まるならファイル名もしくはディレクトリ名、
+# 現在の単語が bs= で始まるなら 256 512 ... 65536 を補完候補にする
+
+compctl -Q -S '' -k '( if= of= bs= skip= count= )' \
+  -x 'S[(if|of)=]' -f \
+  -  's[bs=]' -k '( 256 512 1024 2048 4096 65536 )' \
+  -- dd
+
+# dd
+#compctl -k '(if of conv ibs obs bs cbs files skip file seek count)' \
+#	-S '=' -x 's[if=], s[of=]' -f - 'C[0,conv=*,*] n[-1,,], s[conv=]' \
+#	-k '(ascii ebcdic ibm block unblock lcase ucase swap noerror sync)' \
+#	-q -S ',' - 'n[-1,=]' -X '<number>'  -- dd
+
+#----------------------
+# グループ名の NIS の有無に応じた補完
+#----------------------
+
+# groups, newgrp, chgrp, chown のグループ名は NIS または /etc/group から補完
+# ここでは i386/Linux にだけ NIS を引いていない設定
+
+#if [ $SYSTEM = gnu -a $MACHTYPE != sparc ]; then
+#  groups=( "${${(f)$(</etc/group)}%%:*}" )
+# else
+#  groups=( "${${(f)$(ypcat group)}%%:*}" ) # if you use NIS
+#fi
+#compctl -s '$(groups)' + -k groups newgrp
+#compctl -f -x 'p[1], p[2] C[-1,-*]' -k groups -- chgrp
+#compctl -f -x 'p[1] n[-1,.], p[2] C[-1,-*] n[-1,.]' -k groups \
+#	- 'p[1], p[2] C[-1,-*]' -u -S '.' -- chown
+
+#----------------------
+# umount
+#----------------------
+# umount は mount ずみのディレクトリを補完
+
+compctl -K _umounttab umount
+function _umounttab () { reply=( `mount | cut -d' ' -f3` ) }
+
+#----------------------
+# ssh
+#----------------------
+# ssh は ~/.ssh/known_hosts に入っているものを補完
+# scp は ~/.ssh/known_hosts に入っているもので補完し、末尾に : を付ける
+# 失敗したらファイルもしくはディレクトリ名を補完
+
+compctl -K _sshhosts -k hosts -x 'c[-1,-l]' -u -- ssh ssh1 slogin slogin1
+#compctl -S ':' -K _sshhosts + -f scp
+
+compctl \
+	-k _sshhosts -S ':' \
+	-g '*(-/) *' -S ' ' \
+	-u -S '@' \
+	-x 'n[-1,@]' -K _sshhosts -S ':' \
+	- 's[-]' -k '(a A q Q p r v B C L S o P c i)' \
+	- 'c[-1,-S]' -X '' -f \
+	- 'c[-1,-l]' -u \
+	- 'c[-1,-o]' -X '' \
+	- 'c[-1,-P]' -X '' \
+	- 'c[-1,-c]' -X '' -k '(idea blowfish des 3des arcfour tss none)' \
+	- 'c[-1,-i]' -X '' -f \
+	- 'n[-1,:]' -S '' -K _remote_files \
+	- 'C[0,[./]*] ' -f  \
+	-g '*(-/) *' -S ' ' -- scp
+
+function _remote_files {
+	local a
+	read -cA a
+	reply=(`ssh ${a[-1]%%:*} "echo ${a[-1]#*:}*/(/N) ${a[-1]#*:}*(.N)"`)
+}
+
+function _sshhosts () {
+#	reply=( ` cut -d' ' -f1 ~/.ssh/known_hosts | cut -d, -f1 ` )
+	reply=( ` (cut -d' ' -f1 ~/.ssh/known_hosts && cut -d' ' -f1 ~/.ssh/known_hosts2 ) | cut -d, -f1 ` )
+}
+
+#----------------------
+# man
+#----------------------
+# man は環境変数 MANPATH 以下の全マニュアルページより補完
+# man <数字> だとマニュアルの section <数字> から補完
+
+compctl -K _man_glob man jman whatis apropos
+
+_man_glob () {
+  local a
+  read -cA a
+  case $a[2] in
+    1|2|3|4|5|6|7|8|9)
+      reply=( ${^manpath}/man$a[2]/$1*$2(N:t:fr) )
+      ;;
+    *)
+      reply=( ${^manpath}/man*/$1*$2(N:t:fr) )
+      ;;
+  esac
+}
+
+#----------------------
+# jman
+#----------------------
+# jman は環境変数 MANPATH 以下の全マニュアルページより補完
+# jman <数字> だとマニュアルの section <数字> から補完
+
+compctl -K _jman_glob jman jman2txt
+
+_jman_glob () {
+  local a
+  read -cA a
+  case $a[2] in
+    1|2|3|4|5|6|7|8|9)
+      reply=( ${^manpath}/ja/man$a[2]/$1*$2(N:t:fr) )
+      ;;
+    *)
+      reply=( ${^manpath}/ja/man*/$1*$2(N:t:fr) )
+      ;;
+  esac
+}
+
+#----------------------
+# make, gmake
+#----------------------
+# make, gmake はカレントディレクトリの GNUmakefile, makefile, Makefile から
+# <ほげほげ>: となっているもので補完する
+# make -f <ファイル名> ならそのファイルから補完する
+
+compctl -K _makeentry -x 'c[-1,-f]' -f -- make gmake
+
+function _makeentry () {
+  local a
+  local mfile
+  read -cA a
+  mfile=( GNUmakefile makefile Makefile )
+  while [ ! -z $a[0] ] ; do
+    shift a
+    case $a[0] in
+      -f) shift a ; mfile=($a[0]) ;;
+    esac
+  done
+  while [ ! -z "$mfile[0]" ] ; do
+    if [ -f $mfile[0] ] ; then
+      reply=( ` egrep '^[^#. ][^=	]*:' $mfile[0] | cut -d: -f1 ` )
+      break
+    else
+      shift mfile
+    fi
+  done
+}
+
+# GNU Make
+#compctl -s "\$(awk '/^[a-zA-Z0-9][^ 	]+:/ {print \$1}' FS=: [mM]akefile)" -x \
+#	'c[-1,-f]' -f -- make gmake
+#compctl -x \
+#        'c[-1,-f]' -g "[Mm]ake* *.[Mm]*[Kk] *(-/)" - \
+#        's[CC]' -P "='" -k (gcc cc) -S " -pipe" - \
+#        'S[CF]' -S "='" -k (CFLAGS) - \
+#        's[-I],s[-L]' -g "*(-/)"                        -- make pmake
+
+#----------------------
+# tar, gtar
+#----------------------
+# tar, gtar は 1 番目での補完
+#   tvzf xvzf ... czf を補完
+#   現在の単語が -- ではじまるなら atime-preserve ... help を補完
+#                   ついでに 'available ..' を表示
+# 2 番目の補完
+#   ひとつ前の単語が f か z を含んでいれば *.tgz *.tar.gz などを補完
+#   失敗してひとつ前の単語が f を含んでいれば *.tar などを補完
+# 3 番目以降の補完
+#   tar の中身のリストを補完
+# ぜんぶ失敗したらファイル名を補完
+
+compctl -f -x \
+       's[--]' -Q -k '(atime-preserve remove-files checkpoint \
+               force-local ignore-failed-read preserve same-owner \
+               null totals exclude exclude-from use-compress-program \
+               block-compress unlink help)' \
+            -X 'available options are:' - \
+       'p[1]' -k '(tvzf xvzf xOzf cvzf  tvf xvf xOf czf)' - \
+       'p[2] C[-1,(*z*f*|*f*z*)]' -g "*.tar.(Z|z|gz) *.taz *.tgz (|.)*(-/)" - \
+       'p[2] C[-1,*f*]' -g "*.tar (|.)*(-/)" + -g '*' - \
+       'p[3,-1]' -K _getfilenames \
+    -- tar gtar
+
+# tar.Z, tar.gz, tgz の内容を返す
+
+function _getfilenames () {
+  local a
+  read -cA a
+  case $a[2] in
+    *c*)
+      reply=( echo * )
+      ;;
+    *)
+      if [ "$_curfile" != "$a[3]" ] ; then
+        if [ -f $a[3] ]; then
+          if [ $a[3]:e = gz -o $a[3]:e = tgz -o $a[3]:e = Z ]; then
+            reply=(`tar ztf $a[3]`)
+          else
+            reply=(`tar tf $a[3]`)
+          fi
+        else
+          reply=()
+        fi
+        _curfile=$a[3]
+      fi
+      ;;
+  esac
+}
+
+# GNU tar
+#compctl -f -x 'C[-1,*f*] p[2]' -g "*.tar" -- tar
+#compctl -f -x \
+#        's[--]' -k "(atime-preserve remove-files checkpoint \
+#                force-local ignore-failed-read preserve same-owner \
+#                null totals exclude use-compress-program block-compress \
+#                unlink help)" - \
+#        'C[-1,*z*] p[2]' -g "*.tar.(Z|z|gz) *.taz *.tgz (|.)*(-/)" - \
+#        'C[-1,*f*] p[2]' -g "*.tar (|.)*(-/)"           -- tar gtar
+
+#----------------------
+# kill
+#----------------------
+# kill takes signal names as the first argument after -, but job names after %
+# or PIDs as a last resort
+compctl -j -P '%' + -s '`ps x | tail +2 | cut -c1-5`' + \
+	-x 's[-] p[1]' -k "($signals[1,-3])" -- kill
+
+#compctl -j -P '%' + -s '`ps x | tail +2 | cut -c1-5`' + \
+#    -x 's[-] p[1]' -k signals -- kill
+
+#----------------------
+# chown, chgrp
+#----------------------
+
+compctl -f -x 'p[1], p[2] C[-1,-*]' -k groups -- chgrp
+#compctl -f -x 'p[1] n[-1,.], p[2] C[-1,-*] n[-1,.]' -k groups \
+#	- 'p[1], p[2] C[-1,-*]' -u -S '.' -- chown
+compctl -f -x 'p[1] n[-1,:], p[2] C[-1,-*] n[-1,:]' -k groups \
+       - 'p[1], p[2] C[-1,-*]' -u -S ':' -- chown
+
+groups=( "${${(f)$(</etc/group)}%%:*}" )
+
+#----------------------
+# su
+#----------------------
+# su takes an username and args for the shell.  The `-c' case is
+# handled specially here.
+compctl -u -x 'w[2,-c] p[3,-1]' -l '' -- su
+
+#----------------------
+# gcc
+#----------------------
+# GCC completion, by Andrew Main
+# completes to filenames (*.c, *.C, *.o, etc.); to miscellaneous options after
+# a -; to various -f options after -f (and similarly -W, -g and -m); and to a
+# couple of other things at different points.
+# The -l completion is nicked from the cc compctl above.
+# The -m completion should be tailored to each system; the one below is i386.
+compctl -g '*.([cCmisSoa]|cc|cxx|ii)' -x \
+	's[-l]' -s '${(s.:.)^LD_LIBRARY_PATH}/lib*.a(:t:r:s/lib//)' - \
+	'c[-1,-x]' -k '(none c objective-c c-header c++ cpp-output assembler assembler-with-cpp)' - \
+	'c[-1,-o]' -f - \
+	'C[-1,-i(nclude|macros)]' -g '*.h' - \
+	'C[-1,-i(dirafter|prefix)]' -g '*(-/)' - \
+	's[-B][-I][-L]' -g '*(-/)' - \
+	's[-fno-],s[-f]' -k '(all-virtual cond-mismatch dollars-in-identifiers enum-int-equiv external-templates asm builtin strict-prototype signed-bitfields signd-char this-is-variable unsigned-bitfields unsigned-char writable-strings syntax-only pretend-float caller-saves cse-follow-jumps cse-skip-blocks delayed-branch elide-constructors expensive-optimizations fast-math float-store force-addr force-mem inline-functions keep-inline-functions memoize-lookups default-inline defer-pop function-cse inline peephole omit-frame-pointer rerun-cse-after-loop schedule-insns schedule-insns2 strength-reduce thread-jumps unroll-all-loops unroll-loops)' - \
+	's[-g]' -k '(coff xcoff xcoff+ dwarf dwarf+ stabs stabs+ gdb)' - \
+	's[-mno-][-mno][-m]' -k '(486 soft-float fp-ret-in-387)' - \
+	's[-Wno-][-W]' -k '(all aggregate-return cast-align cast-qual char-subscript comment conversion enum-clash error format id-clash-6 implicit inline missing-prototypes missing-declarations nested-externs import parentheses pointer-arith redundant-decls return-type shadow strict-prototypes switch template-debugging traditional trigraphs uninitialized unused write-strings)' - \
+	's[-]' -k '(pipe ansi traditional traditional-cpp trigraphs pedantic pedantic-errors nostartfiles nostdlib static shared symbolic include imacros idirafter iprefix iwithprefix nostdinc nostdinc++ undef)' -X 'Use "-f", "-g", "-m" or "-W" for more options' -- gcc g++
+
+
+
+#----------------------
+# kld (FreeBSD)
+#----------------------
+
+function _kld () {
+	if [ -d /boot/kernel ]; then
+		reply=( ` ls -1 /boot/kernel/*.ko `)
+	else
+		reply=( ` ls -1 /modules/*.ko `)
+	fi
+}
+compctl -K _kld kldload kldunload
+
+#----------------------
+# chflags(1)
+#----------------------
+
+#compctl -k '(opaque noopaque dump nodump sappnd nosappnd schg noschg sunlnk nosunlnk uappnd nouappnd uchg nouchg uunlnk nouunlnk)' -f chflags
+
+#----------------------
+# apt-get by nmnl.jp
+#----------------------
+
+# http://nmnl.jp/diary/20030512.html#p03
+# ~/tmp/apt-pkgnames は、apt-cache pkgnames > ~/tmp/apt-pkgnames であらかじめ作っておく
+# shell> alias apt-update='sudo apt-get update;apt-cache pkgnames > ~/tmp/pkgnames'
+
+compctl -k '(update upgrade install remove source build-dep dist-upgrade dselect-upgrade clean autoclean check)' \
+	-x 'c[-1,-t]' -k '(stable unstable testing woody sid sarge)' \
+	- 'C[-1,(install|remove|source|build-dep|check)]' \
+	-K _apt -- apt-get
+
+compctl -k '(add gencaches showpkg stats dump dumpavail unmet search show depends pkgnames dotty policy)' \
+	-x 'C[-1,(showpkg|show|depends|dotty|search)]' \
+	-K _apt -- apt-cache
+
+functions _apt () {
+     reply=(`cat ~/tmp/apt-pkgnames`)
+}
+
+#----------------------           
+# fink package system for OSX
+#----------------------
+
+compctl -k '(install remove purge update selfupdate update-all configure list apropos describe index \
+		validate scanpackages cleanup)' fink
+
+
+# svn test
+
+svncmds=(add blame cat checkout cleanup commit copy delete diff export help import info list lock log merge mkdir move
+		propdel propedit propget proplist propset resolved revert status switch unlock update)
+
+svnadmcmds=(create deltify dump help hotcopy list-dblogs list-unused-dblogs load lslocks lstxns recover rmlocks rmtxns
+		setlog verify)
+
+function _svnitems () { reply=( `for i in $SVNROOT/*; do
+  echo 'file://'$i
+done ` ) }
+
+compctl -k "($svncmds)" \
+	-x "c[-1,-D]" \
+	- "r[add,;]" -f \
+	- "r[delete,;]" -f \
+	- "r[diff,;]" -f \
+	- "r[move,;]" -f \
+	- "r[rename,;]" -f \
+	- "r[copy,;]" -f \
+	- "r[cat,;]" -f \
+	- "r[import,;]" -f \
+	- "r[revert,;]" -f \
+	- "r[propset,;]" -f \
+	- "r[checkout,;]" -k "(-r -q -N --username --password --no-auth-cache --non-interactive --config-dir --ignore-externals)" \
+		-K _svnitems  \
+	-- svn	
+
+
+compctl -k "($svnadmcmds)" \
+	-f \
+	svnadmin
+
+
+####################################################
+# 整理前、または使わないサンプル例
+####################################################
+
+# By Bart Schaefer
+# CVS -- there's almost no way to make this all-inclusive, but ...
+#
+cvsflags=(-H -Q -q -r -w -l -n -t -v -b -e -d)
+cvscmds=(add admin checkout commit diff history import export log rdiff
+	    release remove status tag rtag update)
+
+function _cvsitems () {
+        reply=( `ls -1 $CVSROOT` )
+}
+
+# diff assumes gnu rcs using gnu diff
+# log assumes gnu rcs
+
+compctl -k "($cvscmds $cvsflags)" \
+    -x "c[-1,-D]" -k '(today yesterday 1\ week\ ago)' \
+    - "r[add,;]" -k "(-k -m)" -f \
+    - "r[admin,;]" -K cvstargets \
+    - "r[checkout,;]" -k "(-A -N -P -Q -c -f -l -n -p -q -s -r -D -d -k -j)" -K _cvsitems  \
+    - "r[commit,;]" -k "(-n -R -l -f -m -r)"  -K cvstargets \
+    - "r[diff,;]" -k "(-l -D -r -c -u -b -w)" -K cvstargets \
+    - "r[history,;]" \
+	-k "(-T -c -o -m -x -a -e -l -w -D -b -f -n -p -r -t -u)" \
+	-K cvstargets \
+    - "r[history,;] c[-1,-u]" -u \
+    - "r[import,;]" -k "(-Q -q -I -b -m)" -f \
+    - "r[export,;]" -k "(-N -Q -f -l -n -q -r -D -d)" -f \
+    - "R[(r|)log,;]" -k "(-l -R -h -b -t -r -w)" -K cvstargets \
+    - 'R[(r|)log,;] s[-w] n[-1,,],s[-w]' -u -S , -q \
+    - "r[rdiff,;]" -k "(-Q -f -l -c -u -s -t -D -r -V)" -K cvstargets \
+    - "r[release,;]" -k "(-Q -d -q)" -f \
+    - "r[remove,;]" -k "(-l -R)" -K cvstargets \
+    - "r[status,;]" -k "(-v -l -R)" -K cvstargets \
+    - "r[tag,;]" -k "(-Q -l -R -q -d -b)" -K cvstargets \
+    - "r[rtag,;]" -k "(-Q -a -f -l -R -n -q -d -b -r -D)" -f \
+    - "r[update,;]" -k "(-A -P -Q -d -f -l -R -p -q -k -r -D -j -I)" \
+	-K cvstargets \
+    -- cvs
+unset cvsflags cvscmds
+
+#cvstargets() {
+#    local nword args pref f
+#    setopt localoptions nullglob
+#    read -nc nword; read -Ac args
+#    pref=$args[$nword]
+#    if [[ -d $pref:h && ! -d $pref ]]
+#    then
+#	pref=$pref:h
+#    elif [[ $pref != */* ]]
+#    then
+#	pref=
+#    fi
+#    [[ -n "$pref" && "$pref" != */ ]] && pref=$pref/
+#    if [[ -f ${pref}CVS/Entries ]]
+#    then
+#	reply=( "${pref}${^${${(f@)$(<${pref}CVS/Entries)}#/}%%/*}"
+#		${pref}*/**/CVS(:h) )
+#    else
+#	reply=( ${pref}*/**/CVS(:h) )
+#    fi
+#}
+
+function cvstargets() {
+   reply=( echo "$CVSROOT")
+}
+
+#------------------------------------------------------------------------------
+# LINUXer
+#------------------------------------------------------------------------------
+
+# for linux ??
+#compctl -s '$(groups)' + -k groups newgrp
+#compctl -g '*.x' + -g '*(-/)' rpcgen
+#compctl -u -x 'c[-1,-w]' -f -- ac
+#compctl -/g '*.m(.)' mira
+
+
+# RedHat Linux rpm utility
+#
+compctl -s '$(rpm -qa)' \
+	-x 's[--]' -s 'oldpackage percent replacefiles replacepkgs noscripts
+		       root excludedocs includedocs test upgrade test clean
+		       short-circuit sign recompile rebuild resign querytags
+		       queryformat version help quiet rcfile force hash' - \
+	's[ftp:]' -P '//' -s '$(</u/zsh/ftphosts)' -S '/' - \
+	'c[-1,--root]' -g '*(-/)' - \
+	'c[-1,--rcfile]' -f - \
+	'p[1] s[-b]' -k '(p l c i b a)' - \
+	'c[-1,--queryformat] N[-1,{]' \
+		-s '"${${(f)$(rpm --querytags)}#RPMTAG_}"' -S '}' - \
+	'W[1,-q*] C[-1,-([^-]*|)f*]' -f - \
+	'W[1,-i*], W[1,-q*] C[-1,-([^-]*|)p*]' \
+		-g '*.rpm' + -g '*(-/)' + -f -- rpm
+
+
+#------------------------------------------------------------------------------
+#compctl -g '*.deb' + -g '(|.)*(-/)' -x \
+#        's[--]' -k (recursive install unpack record-avail \
+#                    get-selections set-selections update-avail \
+#                    merge-avail clear-avail forget-old-unavail \
+#                    status print-avail listfiles list search audit \
+#                    print-architecture print-gnu-build-architecture \
+#                    print-installation-architecture compare-versions \
+#                    help version force-help debug=help licence build \
+#                    contents control info field extract vextract fsys-tarfile )    -- dpkg
+#------------------------------------------------------------------------------
+# GNU finger
+#compctl -u -S @ -x \
+#        'n[5,,]' -k hosts -S '' - \
+#        'n[4,,]' -k hosts -S '' - \
+#        'n[3,,]' -k hosts -S '' - \
+#        'n[2,,]' -k hosts -S '' - \
+#        'n[1,,]' -k hosts -S '' - \
+#        'n[*,{]' -k hosts -S , - \
+#        'n[1,@]' -k hosts - \
+#        'S[.]' -k '(.local)' -S @ - \
+#        's[-]' -k'(m l s q i b f w h p)'                -- f finger
+#compctl -u -S @ -x 'n[1,@]' -k hosts                -- talk phone
+#compctl -k hosts + -k ftphosts      ping {,nc}ftp telnet traceroute spray
+#function talkmatch {
+#    local u
+#    reply=($(users))
+#    for u in "${${(f)$(rwho 2>/dev/null)}%%:*}"; do
+#	reply=($reply ${u%% *}@${u##* })
+#    done
+#}
+#compctl -K talkmatch talk ytalk ytalk3
+#------------------------------------------------------------------------------
+# setenv
+#setenv () {export $1=$*[2,-1]}
+#compctl -v -x \
+#        'p[1]' -v -k "(DISPLAY LANG TERM LESSCHARSET)" - \
+#        'c[-1,DISPLAY]' -k hostnames -S ":0" - \
+#        'c[-1,LANG]' -k "(japanese C)" - \
+#        'c[-1,PAGER]' -k "(less more)" - \
+#        'c[-1,TERM]' -k "(vt100 kterm xterm news screen pc3 cons25)" - \
+#        'c[-1,LESSCHARSET]' -k "(japanese jis sjis ujis)" -- setenv
+#------------------------------------------------------------------------------
+
+#----------------------
+# フォントを引数に取る X のクライアント
+#----------------------
+
+# xlsfont から font の list をとりだす
+
+function _getfontlist (){
+  local grephead
+  local greplist
+  local a
+  read -cA a
+  if [ -z "$_fontlist" ] ; then
+    OIFS=$IFS; IFS=":"
+    xlsfonts $xfdopt | awk \
+      'BEGIN{FS="-";OFS="-"}{\
+        if (/^-/) { \
+          print "-" $2,$3,$4,$5,$6,$7,"*","*","*","*",$12,"*",$14,$15} \
+        else { print } }' \
+      | uniq | tr '\n' ':' | read -A _fontlist
+    IFS=$OIFS
+  fi
+  if [ -z "$a[-1]" ] ; then
+    reply=($_fontlist)
+  else
+    grephead=$a[-1]
+    greplist=( $_fontlist[(r)$grephead*,(R)$grephead*] )
+    reply=($greplist)
+  fi
+}
+
+# xfd では -display ... -fn を補完、-ほげほげ については補足を表示
+# ひとつまえが -fn ならフォントリストを補完
+
+compctl -x \
+  'C[-1,-display]' -X "<<X server to contacti ex)localhost:0.0>>" - \
+  'C[-1,-geometry]' -X "<<sise and location ex)20x30+100-100>>" - \
+  'C[-1,-start]' -X "<<the number of first character to show>>" - \
+  'C[-1,-rows]' -X "<<number of rows in grid>>" - \
+  'C[-1,-columns]' -X "<<number of columns in grid>>" - \
+  'C[-1,-fn]' -X "<<XLFD>>" -K _getfontlist - \
+  'p[1,-1]' -k '(-display -geometry -start -box -center -rows -columns -fn)' \
+  -- xfd
+
+# rxvt で -fn -fk のあとはフォントリスト
+# kterm で -fn -fk -fr のあとはフォントリスト
+# muel で -fontset のあとはフォントリスト
+
+#compctl -x 'c[-1,-fn]' -K _getfontlist - -- xterm
+compctl -x 'C[-1,-f(n|k)]' -K _getfontlist - -- rxvt
+compctl -x 'C[-1,-f(n|r|k)]' -K _getfontlist - -- kterm
+compctl -f -x 'c[-1,-fontset]' -K _getfontlist - -- mule emacs
+
+
+
+
+#------------------------------------------------------------------------------
+# Various MH completions by Peter Stephenson
+# You may need to edit where it says *Edit Me*.
+
+# The following three functions are best autoloaded.
+# mhcomp completes folders (including subfolders),
+# mhfseq completes sequence names and message numbers,
+# mhfile completes files in standard MH locations.
+
+function mhcomp {
+  # Completion function for MH folders.
+  # Works with both + (rel. to top) and @ (rel. to current).
+  local nword args pref char mhpath
+  read -nc nword
+  read -cA args
+
+  pref=$args[$nword]
+  char=$pref[1]
+  pref=$pref[2,-1]
+
+  # The $(...) here accounts for most of the time spent in this function.
+  if [[ $char = + ]]; then
+  #    mhpath=$(mhpath +)
+  # *Edit Me*: use a hard wired value here: it's faster.
+    mhpath=~/Mail
+  elif [[ $char = @ ]]; then
+    mhpath=$(mhpath)
+  fi
+
+  eval "reply=($mhpath/$pref*(N-/))"
+
+  # I'm frankly amazed that this next step works, but it does.
+  reply=(${reply#$mhpath/})
+}
+
+mhfseq() {
+  # Extract MH message names and numbers for completion.  Use of the
+  # correct folder, if it is not the current one, requires that it
+  # should be the previous command line argument.  If the previous
+  # argument is `-draftmessage', a hard wired draft folder name is used.
+
+  local folder foldpath words pos nums
+  read -cA words
+  read -cn pos
+
+  # Look for a folder name.
+  # First try the previous word.
+  if [[ $words[$pos-1] = [@+]* ]]; then
+    folder=$words[$pos-1]
+  # Next look and see if we're looking for a draftmessage
+  elif [[ $words[$pos-1] = -draftmessage ]]; then
+    # *Edit Me*:  shortcut -- hard-wire draftfolder here
+    # Should really look for a +draftfolder argument.
+    folder=+drafts
+  fi
+  # Else use the current folder ($folder empty)
+
+  if [[ $folder = +* ]]; then
+  # *Edit Me*:  use hard-wired path with + for speed.
+    foldpath=~/Mail/$folder[2,-1]
+  else
+    foldpath=$(mhpath $folder)
+  fi
+
+  # Extract all existing message numbers from the folder.
+  nums=($foldpath/<->(N:t))
+  # If that worked, look for marked sequences.
+  # *Edit Me*: if you never use non-standard sequences, comment out
+  # or delete the next three lines.
+  if (( $#nums )); then
+    nums=($nums $(mark $folder | awk -F: '{print $1}'))
+  fi
+
+  # *Edit Me*:  `unseen' is the value of Unseen-Sequence, if it exists;
+  set -A reply next cur prev first last all unseen $nums
+
+}
+
+mhfile () {
+  # Find an MH file; for use with -form arguments and the like.
+  # Use with compctl -K mhfile.
+
+  local mhfpath file
+  # *Edit Me*:  Array containing all the places MH will look for templates etc.
+  mhfpath=(~/Mail /usr/local/lib/MH)
+
+  # Emulate completeinword behaviour as appropriate
+  local wordstr
+  if [[ -o completeinword ]]; then
+    wordstr='$1*$2'
+  else
+    wordstr='$1$2*'
+  fi
+
+  if [[ $1$2 = */* ]]; then
+    # path given: don't search MH locations
+    eval "reply=($wordstr(.N))"
+  else
+    # no path:  only search MH locations.
+    eval "reply=(\$mhfpath/$wordstr(.N:t))"
+  fi
+}
+
+# Note: you must type the initial + or @ of a folder name to get
+# completion, even in places where only folder names are allowed.
+# Abbreviations for options are not recognised.  Hit tab to complete
+# the option name first.
+compctl -K mhfseq -x 's[+][@]' -K mhcomp -S / -q - \
+  's[-]' -k "(all fast nofast header noheader help list nolist \
+  pack nopack pop push recurse norecurse total nototal)" -- folder
+compctl -K mhfseq -x 's[+][@],c[-1,-draftfolder] s[+][@]' \
+  -K mhcomp -S / -q - 'c[-1,-draftmessage]' -K mhfseq - \
+  'C[-1,-(editor|whatnowproc)]' -c - \
+  's[-]' -k "(draftfolder draftmessage nodraftfolder editor noedit \
+  file form use nouse whatnowproc nowhatnowproc help)" - \
+  'c[-1,-form]' -K mhfile -- comp
+compctl -K mhfseq -x 's[+][@]' -K mhcomp -S / -q - \
+  's[-]' -k "(audit noaudit changecur nochangecur form format \
+  file silent nosilent truncate notruncate width help)" - \
+  'C[-1,-(audit|form)]' -K mhfile - 'c[-1,file]' -f + -- inc
+compctl -K mhfseq -x 's[+][@]' -K mhcomp -S / -q - \
+  's[-]' -k "(sequence add delete list public nopublic zero nozero help)" -- \
+  mark
+compctl -K mhfseq -x 's[+][@]' \
+  -K mhcomp -S / -q - 'c[-1,-file]' -f - 'c[-1,-rmmprov]' -c - \
+  's[-]' -k "(draft link nolink preserve nopreserve src file \
+  rmmproc normmproc help)" -- refile
+compctl -K mhfseq -x 's[+][@]' \
+  -K mhcomp -S / -q - 'c[-1,-draftmessage]'  -K mhfseq -\
+  's[-]' -k "(annotate noannotate cc nocc draftfolder nodraftfolder \
+  draftmessage editor noedit fcc filter form inplace noinplace query \
+  noquery width whatnowproc nowhatnowproc help)" - 'c[-1,(cc|nocc)]' \
+  -k "(all to cc me)" - 'C[-1,-(filter|form)]' -K mhfile - \
+  'C[-1,-(editor|whatnowproc)]' -c -- repl
+compctl -K mhfseq -x 's[+][@]' -K mhcomp -S / -q - \
+  's[-]' -k "(clear noclear form format header noheader reverse noreverse \
+  file help width)" - 'c[-1,-file]' -f - 'c[-1,-form]' -K mhfile -- scan
+compctl -K mhfseq -x 's[+][@]'  -K mhcomp -S / -q - \
+  's[-]' -k "(draft header noheader showproc noshowproc)" - \
+  'c[-1,showproc]' -c -- show next prev
+compctl -K mhfseq -x 's[+][@]' -K mhcomp -S / -q - 's[-]' \
+  -k "(help)" -- rmm
+compctl -K mhfseq -x 's[+][@]' -K mhcomp -S / -q - \
+  's[-]' -k "(after before cc date datefield from help list nolist \
+  public nopublic search sequence subject to zero nozero not or and \
+  lbrace rbrace)" -- pick
+compctl -K mhfseq -x 's[+][@]' -K mhcomp -S / -q - 's[-]' \
+  -k "(alias check draft draftfolder draftmessage help nocheck \
+  nodraftfolder)" -- whom
+
+#------------------------------------------------------------------------------
+# nouse
+#------------------------------------------------------------------------------
+
+#compctl -u -x 's[+] c[-1,-f],s[-f+]' -g '~/Mail/*(:t)' - \
+#	's[-f],c[-1,-f]' -f -- mail elm
+#------------------------------------------------------------------------------
+
+# Another possibility for cd/pushd is to use it in conjunction with the
+# cdmatch function (in the Functions subdirectory of zsh distribution).
+#autoload cdmatch
+#if [[ -o AUTO_REMOVE_SLASH ]] then
+#    compctl -x 'p[2]' -Q -K cdmatch2 - 'S[/][~][./][../]' -g '*(-/)' + \
+#	-g '*(-/D)' - 'n[-1,/], s[]' -K cdmatch -q -S '/' -- cd pushd
+#else
+#    compctl -x 'p[2]' -Q -K cdmatch2 - 'S[/][~][./][../]' -g '*(-/)' + \
+#	-g '*(-/D)' - 'n[-1,/], s[]' -K cdmatch -S '/' -- cd pushd
+#fi
+
+#------------------------------------------------------------------------------
+# If the command is rsh, make the first argument complete to hosts and treat the
+# rest of the line as a command on its own.
+#compctl -k hosts -x 'p[2,-1]' -l '' -- rsh
+#compctl -caF -x \
+#        'p[1]' -k hosts - \
+#        'c[-1,-l]' -k "(nippashi)" - \
+#        's[-]' -k winopt - 'c[-1,-display]' -k '($DISPLAY)' -S ' ' - \
+#        'p[2,-1]' -l ''                                 -- rsh rs
+#compctl -c -x 'p[1]' -k hostnames - \
+#        'c[-1,kterm] s[-]' -k '(fn fl fk T)' - \
+#        'p[2,-1]' -l '' - \
+#        'c[-1,-fl]' \
+#         -k ('"-*-fixed-medium-normal--16-iso*"') \
+#         -S ' -fn 8x16 -fk kanji16&' - \
+#                                                        -- xon xrsh
+#compctl -x \
+#        's[-]' -k winopt - \
+#        'c[-1,-display]' -k hostnames -S ':0 ' - \
+#        'C[-1,-*geometry]' -k '(+0+0 -0+0)'             -- xpbiff xbiff
+
+# rlogin takes hosts and users after `-l'
+#compctl -k hosts -x 'c[-1,-l]' -u -- rlogin slogin
+
+# rcp: match files *and* hosts initially, match files after a :, if the first
+# argument contained a : then the second matches files and vice versa.
+#compctl -f -k hosts -x 'n[1,:]' -f - \
+#	'p[1] W[2,*:*]' -f - 'p[1]' -k hosts -S ':' - \
+#	'p[2] W[1,*:*]' -f - 'p[2]' -k hosts -S ':' -- rcp scp
+#------------------------------------------------------------------------------
+# strip, profile, and debug only executables.  The compctls for the
+# debuggers could be better, of course.
+#compctl -g '*(*)' strip gprof adb dbx xdbx ups
+
+#------------------------------------------------------------------------------
+# Run ghostscript on postscript files, but if no postscript file matches what
+# we already typed, complete directories as the postscript file may not be in
+# the current directory.
+#compctl -g '*.(e|)ps' + -g '*(-/)' gs ghostview psps pstops psmulti psselect
+#compctl -g "*.[pP][sS] *.[pP][sS].gz ^*.* *(-/)" -x \
+#        's[-]' -k winopt - 'c[-1,-display]' -k hostnames -S ':0 ' \
+#                                                         -- ghostview gs gv
+#------------------------------------------------------------------------------
+# Similar things for tex, texinfo and dvi files.
+#compctl -g '*.tex*' + -g '*(-/)' {,la,gla,ams{la,},{g,}sli}tex texi2dvi
+#compctl -g '*.dvi' + -g '*(-/)' xdvi dvips
+#compctl -g '*.dvi *(-/)' -x \
+#        's[-]' -k "($winopt s S p l paper keep rv)" - \
+#        'c[-1,-paper]' -k "(a4r)" - \
+#        'c[-1,-display]' -k hostnames -S ':0 '          -- xdvi
+#compctl -g '*.tex*' + -g '*(-/)' {J,j,}latex {J,j,}tex
+#compctl -g '*.dvi' + -g '*(-/)' -x \
+#        'c[-1,-o]' -k (landscape a5 b4 b4landscape)     -- dvi2ps jdvi2kps
+#------------------------------------------------------------------------------
+# For rcs users, co and rlog from the RCS directory.  We don't want to see
+# the RCS and ,v though.
+#compctl -g 'RCS/(.|)*(:s@RCS/@@:s/,v//)' co rlog rcs rcsdiff
+
+#------------------------------------------------------------------------------
+# Some systems have directories containing indices of ftp servers.
+# For example: we have the directory /home/ftp/index/INDEX containing
+# files of the form `<name>-INDEX.Z', this leads to:
+#compctl -g '/home/ftp/index/INDEX/*-INDEX.Z(:t:r:s/-INDEX//)' ftp tftp
+#------------------------------------------------------------------------------
+# Change default completion (see the multicomp function in the Function
+# subdirectory of the zsh distribution).
+#autoload multicomp
+#compctl -D -f + -U -K multicomp
+#autoload ze
+#compctl -f -x 'w[1,-f]' -F -- zed
+# If completion of usernames is slow for you, you may want to add something
+# like
+#    -x 'C[0,*/*]' -f - 's[~]' -S/ -k users + -u
+# where `users' contains the names of the users you want to complete often.
+# If you want to use this and to be able to complete named directories after
+# the `~' you should add `+ -n' at the end
+#------------------------------------------------------------------------------
+# This is to complete all directories under /home, even those that are not
+# yet mounted (if you use the automounter).
+
+# This is for NIS+ (e.g. Solaris 2.x)
+#compctl -Tx 's[/home/] C[0,^/home/*/*]'  -S '/' -s '$(niscat auto_home.org_dir | \
+#	awk '\''/export\/[a-zA-Z]*$/ {print $NF}'\'' FS=/)'
+
+# And this is for YP (e.g. SunOS4.x)
+#compctl -Tx 's[/home/] C[0,^/home/*/*]' -S '/' -s '$(ypcat auto.home | \
+#	awk '\''/export\/[a-zA-Z]*$/ {print $NF}'\'' FS=/)'
+#------------------------------------------------------------------------------
+# Find is very system dependent, this one is for GNU find.
+# Note that 'r[-exec,;]' must come first
+#if [[ -r /proc/filesystems ]]; then
+#    # Linux
+#    filesystems='"${${(f)$(</proc/filesystems)}#*	}"'
+#else
+#    filesystems='ufs 4.2 4.3 nfs tmp mfs S51K S52K'
+#fi
+#compctl -x 'r[-exec,;][-ok,;]' -l '' - \
+#'s[-]' -s 'daystart {max,min,}depth follow noleaf version xdev \
+#	{a,c,}newer {a,c,m}{min,time} empty false {fs,x,}type gid inum links \
+#	{i,}{l,}name {no,}{user,group} path perm regex size true uid used \
+#	exec {f,}print{f,0,} ok prune ls' - \
+#	'p[1]' -g '. .. *(-/)' - \
+#	'C[-1,-((a|c|)newer|fprint(|0|f))]' -f - \
+#	'c[-1,-fstype]' -s $filesystems - \
+#	'c[-1,-group]' -k groups - \
+#	'c[-1,-user]' -u -- find
+#------------------------------------------------------------------------------
+# Generic completion for C compiler.
+#compctl -g "*.[cCoa]" -x 's[-I]' -g "*(/)" - \
+#	's[-l]' -s '${(s.:.)^LD_LIBRARY_PATH}/lib*.a(:t:r:s/lib//)' -- cc
+#compctl -g "*.{c,C,cc,cpp,o,a}" -x 's[-I],s[-L]' -g "*(/)" - \
+#        'C[-1,-o]' -g "*.c(:r)" - \
+#        's[-l]' -s '${(s.:.)^LD_LIBRARY_PATH}/lib*.a(:t:r:s/lib//) \
+#                /usr/{,*/}lib/lib*.a(:t:r:s/lib//)'     -- cc gcc
+
+
+#------------------------------------------------------------------------------
+# There are (at least) two ways to complete manual pages.  This one is
+# extremely memory expensive if you have lots of man pages
+#man_var() {
+#   man_pages=( ${^manpath}/man*/*(N:t:r) )
+#   compctl -k man_pages man
+#   reply=( $man_pages )
+#}
+#compctl -K man_var man
+
+# This one isn't that expensive but somewhat slower
+#man_glob () {
+#   local a
+#   read -cA a
+#   if [[ $a[2] = -s ]] then         # Or [[ $a[2] = [0-9]* ]] for BSD
+#     reply=( ${^manpath}/man$a[3]/$1*$2(N:t:r) )
+#   else
+#     reply=( ${^manpath}/man*/$1*$2(N:t:r) )
+#   fi
+#}
+#compctl -K man_glob man
+#------------------------------------------------------------------------------
+# xsetroot: gets possible colours, cursors and bitmaps from wherever.
+# Uses two auxiliary functions.  You might need to change the path names.
+# The =:- can be omitted if you use a beta6-hzoli4 or later version.
+#Xcolours() {
+#  reply=( ${(L)=:-$(awk '{ if (NF = 4) print $4 }' < /usr/openwin/lib/X11/rgb.txt)} )
+#}
+#Xcursor() {
+#  reply=( $(sed -n 's/^#define[	 ][ 	]*XC_\([^ 	]*\)[ 	].*$/\1/p' \
+#	  < /usr/include/X11/cursorfont.h) )
+#}
+#compctl -k '(-help -def -display -cursor -cursor_name -bitmap -mod -fg -bg
+#   -grey -rv -solid -name)' -x 'c[-1,-display]' -k hosts -S ':0.0' - \
+#   'c[-1,-cursor]' -f -  'c[-2,-cursor]' -f - \
+#   'c[-1,-bitmap]' -g '/usr/include/X11/bitmaps/*' - \
+#   'c[-1,-cursor_name]' -K Xcursor - \
+#   'C[-1,-(solid|fg|bg)]' -K Xcolours -- xsetroot
+
+
+#------------------------------------------------------------------------------
+# example
+#------------------------------------------------------------------------------
+#compctl -K _ncftphosts ncftp
+#function _ncftphosts () {
+#  reply=( ` tail +3 ~/.ncftp/bookmarks | cut -d',' -f1-2 | tr ',' ' ' `)
+#}
+
+

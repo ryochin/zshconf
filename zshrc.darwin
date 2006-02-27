@@ -1,0 +1,27 @@
+#
+# $URL$
+# $Id$
+
+echo "Loading $HOME/.zsh/zshrc.darwin"
+
+path=($path /sw/bin /sw/sbin /Applications /Developer/Tools)
+alias portstat='echo "not available on this OS."'
+
+LESSCHARSET=
+
+export EDITOR=nano
+export SVN_EDITOR=$EDITOR
+
+# lang
+#export LANG=ja_JP.EUC
+
+# for jman
+#setenv LC_CTYPE ja_JP.eucJP
+
+alias tf='tail -0 -F'
+alias mi='open -a mi'
+alias ee='/sw/bin/nano -w'
+alias fetch='wget -q'
+alias top='top -s 1 -o cpu'
+alias ipfw_ls='ipfw -at list'
+

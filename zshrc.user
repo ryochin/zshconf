@@ -1,0 +1,158 @@
+#
+# $URL$
+# $Id$
+
+echo "Loading $HOME/.zsh/zshrc.user"
+
+#umask 027
+
+# env
+export PAGER=jless
+export LESSCHARSET=
+CVSROOT=$HOME/cvs; export CVSROOT
+SVNROOT=$HOME/svn; export SVNROOT
+
+if [ $UID = 0 ]; then
+  MAILDIR=/var/qmail/alias/Maildir; export MAILDIR
+else
+  MAILDIR=$HOME/Maildir; export MAILDIR
+fi
+
+MYSQL_PS1="mysql@`hostname -s`> "; export MYSQL_PS1
+
+# aliases
+alias l='ls -lFAo'
+alias lr='ls -RF'
+alias lf='ls -AF'
+alias lt='ls -lFAot'
+alias ltr='ls -lFAotr'
+alias d=dir
+
+#alias g='grep -a'
+alias g='grep'
+alias psg=psgrep
+alias lg=lsgrep
+alias ns=netstat
+alias ng=netgrep
+alias av=asciiview
+
+alias mv='mv -i'
+alias subject-top='topless -s31 subject -nk'
+
+alias escape='perl -MURI::Escape -le "print URI::Escape::uri_escape(<>)"'
+
+alias c=cat
+#alias d='diff -bi'
+#alias e='emacs'
+alias h=head
+alias j='jobs -l'
+#alias m='more -c'
+alias n=nmore
+#alias p='pico -wz'
+alias s=sort
+alias t=tail
+alias m=$PAGER
+
+alias pd=perldoc
+alias pdm='perldoc -m'
+alias pdl='perldoc -l'
+alias root='su -l'
+alias null='cat /dev/null >'
+alias tm=tmore
+
+alias moon="perl -MAstro::MoonPhase -e 'printf qq/phase is %.1f\nillu  is %.1f %%\n/, (phase)[0] * 30, (phase)[1] * 100'"
+alias gd='dirs -v; echo -n "select number: " ; read newdir; cd -"$newdir"'
+alias files='file ./* | egrep -v "(empty|directory|symbolic|Permission denied)" '
+
+alias svn-addprops="svn propset svn:keywords 'Date Author URL Id' "
+
+# options
+alias gg='grep -an -B 5 -A 5'
+alias tt='tail -36'
+alias pa='ps -aux'
+alias ping='ping -c 5'
+alias ftp='ncftp -L'
+alias cdcontrol='cdcontrol -f /dev/acd0a'
+alias lock='lock -np'
+
+# read-only
+#alias mutt='mutt -R'
+
+alias systat='systat 1'
+alias ntop='ntop -r1 -n'
+alias trafshow='trafshow -r1 -n'
+
+# print help for me.
+function help(){
+	echo "
+< zsh command help for me :-) >
+ ^A	move cursor to the head of the sentense
+ ^E	move cursor to the tail of the sentense
+
+ ^B	move cursor to back word
+ ^F	move cursor to next word
+
+ ^K	delete right to cursor
+ ^U	delete left to cursor
+
+ ^L	clear screen
+ ^T	replace to the before charactor
+ ^I	complation (=tab)
+
+ ^G	cancel command
+
+ ^R	history search (backward)
+
+ ^W	copy & remove this line
+ ^Y	paste
+
+ ^Q	commandline stacking
+
+ ^J	return??
+ ^M	return??
+
+ ^N	??
+ ^O	??
+
+- std
+
+ ^H	delete one char
+ ^Z	sunpend process (or change screen)
+ ^D	logout
+	"
+}
+
+# see bash-prompt howto.
+function jobcount() {
+#        jobs|wc -l| awk '{print $1}'
+#	echo -n `jobs | wc -l | awk '{print $1}'`
+
+jobs > ~/.jobs_tmp;
+echo -n `cat ~/.jobs_tmp | wc -l | awk '{print $1}'`;
+
+}
+
+# set prompt
+function prompt() {
+    case $1 in
+	1) PROMPT="%n@%l'%m:%~%# " ;;  # default
+        2) PROMPT='%n@%m:%# ' ;;    # pwd simple mode
+	3) PROMPT='$ ' ;;
+	4) PROMPT='%n@%m %# ' ;;
+	5) PROMPT="%n@%l'%U%m%u[`jobcount`]:%4~%# " ;;
+	*) PROMPT="$PROMPT_DEFAULT" ;;
+    esac
+}
+
+function rprompt() {
+    case $1 in
+	0) RPROMPT='' ;;   # nothing
+	1) RPROMPT='%B[%(?.%!.ERROR:%?)] (%U%D%u %D{%a %H:%M:%S %p})%b' ;;
+	2) RPROMPT='%B(%D %D{%a %H:%M:%S})%b' ;;
+	3) RPROMPT='%D{%H:%M:%S %p}' ;;
+	4) RPROMPT='[%(?.%!.ERR:%?)] %D{%H:%M:%S %p}' ;;
+        5) RPROMPT='[%~] %D{%H:%M:%S %p}' ;;
+	*) RPROMPT="$RPROMPT_DEFAULT" ;;
+    esac
+}
+

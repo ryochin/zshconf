@@ -1,0 +1,393 @@
+#
+# $URL$
+# $Id$
+
+echo "Loading $HOME/.zsh/functions"
+
+# csh 系の setenv をエミュレートする
+# shell> setenv
+function setenv () {
+  ev=$1
+  shift
+  export $ev="$*"
+}
+
+# ネットワーク環境で良く使う X の DISPLAY の設定を「disp ホスト名」一発で
+function disp () {
+  export DISPLAY="$*:0.0"
+}
+
+# コマンド一個だけ root で実行する簡易 sudo の例（要パスワード）
+function sudo-lite () {
+  su "$*"
+}
+
+# ps の出力の中から特定の文字列を検索する
+# shell> psgrep mysql
+function psgrep () {
+  case $SYSTEM {
+  sun)
+    echo "USER       PID %CPU %MEM   SZ  RSS TT STAT START  TIME COMMAND"
+    ps auxw | grep $* ;;
+  sol)
+    echo "USER       PID %CPU %MEM   SZ  RSS TT       S    START  TIME COMMAND"
+    \ps -auwx | grep $* ;;
+  sgi)
+    echo "     UID   PID  PPID  C    STIME TTY     TIME CMD"
+    ps -ef | grep $* ;;
+  gnu)
+    echo "USER       PID %CPU %MEM  SIZE   RSS TTY STAT START   TIME COMMAND"
+    ps auxw | grep -v grep | grep $* ;;
+  bsd)
+    echo "USER      PID %CPU %MEM   VSZ  RSS  TT  STAT STARTED      TIME COMMAND"
+    ps -auxww | grep -v grep | grep $* ;;
+  darwin)
+    echo "USER       PID %CPU %MEM      VSZ    RSS  TT  STAT STARTED      TIME COMMAND"
+    ps -auxww | grep -v grep | grep $* ;; 
+  *)
+    ps auxw | grep $* ;;
+  }
+}
+
+# ls grep
+# shell> lsgrep conf
+function lsgrep () {
+	ls -1 | grep $* | xargs ls -la
+}
+
+# netstat の出力の中から特定の文字列を検索する
+# shell> netgrep 22
+function netgrep() {
+  case $SYSTEM {
+  sol)
+    netstat -an | grep $* ;;
+
+  bsd)
+    netstat -na | grep $* ;;
+
+  darwin)
+    netstat -na | grep $* ;;
+  *)
+    echo "machine type not defined." ;;
+  }
+}
+
+# pkg_info の中から特定の文字列を検索する。
+
+function pkggrep() {
+  pkg_info -aI | grep $* 
+}
+
+# precmd という名前の関数は、プロンプト表示の前に毎回実行される特別なもの
+#function precmd () {
+## load=`uptime | cut -f 2 -d v | cut -f 1 -d , | cut -f 2 -d : | tr -d ' '`
+#  load=`uptime | sed -e 's/.*: \([^,]*\).*/\1/'`
+#
+#  if [ $load > 0.5 ]; then
+#	echo 'too high'
+#  fi
+#}
+
+# ll
+function ll () {
+    ls -lAFo $1 | ${PAGER} -C;
+}
+
+# nmore - numeric more
+# 行番号付き more
+function nmore () {
+    cat -n $1 | sed -e 's/^ //' | ${PAGER}
+}
+
+# 簡易 jman2text
+function jman2txt () {
+    jman $*|colcrt  > $*.jman ;
+}
+
+# pskill
+# -> from bashrc example.
+function pskill () {
+        local pid
+        pid=$(ps -ax | grep $1 | grep -v grep | awk '{ print $1 }')
+        echo -n "killing $1 (process $pid)..."
+        kill -9 $pid
+        echo "slaughtered."
+}
+
+### portstat
+# NO WARRANTY -> from FreeBSD users-ml ??
+# shell> portstat 123
+
+function portstat() {
+        case $# in
+                1);;
+                *) echo "usage: $0 <port-number>" 1>&2;
+                        return;;
+        esac
+        port=$1
+        addr="`netstat -f inet -Aan | grep "\*\.$port " | awk '{print $1}'`"
+        if [ X$addr != X ]; then
+                data="`fstat | grep $addr | tail -1`"
+
+                user="`echo $data | awk '{print $1}' `"
+                program="`echo $data | awk '{print $2}' `"
+                proto="`echo $data | awk '{print $7}' `"
+
+                echo "=> '$program' is running at $port/$proto by $user."
+
+        else
+                echo "${port}: port not used" 2>&1
+         fi
+}
+
+### remotestat -- check whether the specified remote port is open or not
+# shell> remotestat 192.168.0.1 80
+
+function remotestat() {
+        case $# in
+		2) nmap -sT -p $2 $1 | egrep "^$2/" ;;
+                *) echo "usage: $0 <host> <port>" 1>&2;
+        esac
+}
+
+function more_no_com() {
+        egrep -v '^#' $1 | jless
+}
+
+function sysmsg() {
+    case $SYSTEM in
+	bsd) cat /var/log/messages ;;
+	gnu) cat /var/log/messages ;;
+	darwin) cat /var/log/system.log ;;
+	*) cat /var/log/messages ;;
+   esac
+}
+
+function hisgrep () {
+        history -1000 | grep $1 | grep -v 'hisgrep'
+}
+                                       
+function count () {
+	word=` echo $1 | wc -c | sed -e 's/ //g' `
+	echo -n `expr $word - 1`
+	echo ' word(s)'
+}
+
+# マッチするファイルを検索
+function search_file() {
+	regex=$1
+	case $# in
+		1) dir='.' ;;
+		2) dir=$2 ;;
+		*) echo "usage: $0 <pattern> <dir>" >& 2
+			return ;;
+	esac
+
+	find ${dir} -type f | perl -lne "print if /${regex}/" 2>/dev/null
+}
+
+
+# day 日以内に更新したファイルを検索
+function search_day() {
+	day=$1
+	case $# in
+		1) dir='.' ;;
+		2) dir=$2 ;;
+		*) echo "usage: $0 <day> <dir>" >& 2
+		 return ;;
+	esac
+
+	find ${dir} -mtime -${day} \! -type d | xargs ls -ltr
+}
+
+# recursive grep search
+function search_grep () {
+	regex=$1
+	case $# in
+		1) dir='.' ;;
+		2) dir=$2 ;;
+		*) echo "usage: $0 <pattern> <dir>" >& 2
+			return ;;
+	esac
+
+	nice -20 grep -anrI $1 ${dir}/* 2>/dev/null
+}
+
+function _perl_inc () {
+        reply=(` cat /etc/perlinc.txt `)
+}
+
+# http entity to ascii
+function entity_pack () {
+	# ':' is for atalk/tcp encode
+	# \x for yahoo query
+	case $OSTYPE {
+		darwin) perl -MJcode -n -e 's/[%:\\]x*([\da-fA-F][\da-fA-F])/pack("C",hex($1))/ge; print Jcode->new($_)->h2z->euc' ;;
+		*) perl -MJcode -n -e 's/[%\\]x*([\da-fA-F][\da-fA-F])/pack("C",hex($1))/ge; print Jcode->new($_)->h2z->euc' ;;
+	}
+}
+
+function gz2bz2 () {
+        zcat $1 | bzip2 - > $1.bz2
+}
+
+function mail_me () {
+	case $# in
+                1)  ;;
+                *) echo "usage: $0 <file>" >& 2
+                        return ;;
+        esac
+
+	if [ -f $1 ]; then
+		mpack -s "[${USER}] `basename $1`" $1 ${USER}
+	else
+		echo "error: $1 is not a regular file."
+	fi
+}
+
+function inject () {
+        case $# in
+                1)  ;;
+                *) echo "usage: $0 <address>" >& 2
+                        return ;;
+        esac
+
+    ( echo "To: $1" && echo 'Subject: [test mail]' && echo '' && echo 'this is test mail.' ) | /var/qmail/bin/qmail-inject
+}
+
+
+# if not freebsd..and not wget u have
+function fetchfile () {
+	case $# in
+		2) echo $1; echo $2;
+		  perl -MLWP::Simple -e 'getstore("$1","$2");' ;;
+		*) echo "usage: $0 <uri> <localfile>" 1>&2 ;;
+	esac
+}
+
+function epoch () {
+	perl -e 'print time,"\n"'
+}
+
+# for PPerl (parsistent perl package)
+function pperl_kill () {
+        case $# in
+                1)  ;;
+                *) echo "usage: $0 <filename>" >& 2
+                        return ;;
+        esac
+
+	pperl -- -k $1
+}
+
+# tree + cat -n + more
+function tmore () {
+    tree -F $1 | cat -n | sed -e 's/^ //' | ${PAGER}
+}
+
+alias tls=tmore
+
+# dig(1) like nsloopup
+function digging() {
+        case $# in
+		1) dig $1 any | egrep -v '^;' | egrep -v '^$' | sort ;;
+                2) dig $1 @$2 any | egrep -v '^;' | egrep -v '^$' | sort ;;
+		3) dig $1 @$2 $3 | egrep -v '^;' | egrep -v '^$' | sort;;
+                *) echo "usage: $0 <name> <server>" 1>&2;
+        esac
+}
+
+function escape_html () {
+	perl -MCGI -e "print CGI::escapeHTML('$1'), qq|\n|"
+}
+
+
+#function tcpwatch () {
+#        case $# in
+#                1) tcpdump -l -n -x -s 1024 tcp port $1 | tcpfilter ;;
+#                2) tcpdump -l -n -x -s 1024 tcp port $1 | tcpfilter -s $2 ;;
+#                *) echo "usage: $0 <port> [ <max size> ]" >& 2 ;;
+#        esac
+#}
+#function udpwatch () {
+#        case $# in
+#                1) tcpdump -l -n -x -s 1024 udp port $1 | tcpfilter ;;
+#                2) tcpdump -l -n -x -s 1024 udp port $1 and udp port $2 | tcpfilter ;;
+#                *) echo "usage: $0 <port>" >& 2 ;;
+#        esac
+#}
+
+function cpan () {
+	perl=/usr/bin/perl
+	case $# in
+		1) ${perl} -MCPAN -e "install $1" ;;
+		*) ${perl} -MCPAN -eshell ;;
+	esac
+}
+
+# 
+function imgsize () {
+	case $# in
+		1) perl -MImage::Size -e "printf qq|width: %d, height: %d, type: %s\n|, imgsize('$1')" ;;
+		*) echo "usage: $0 <file>" >& 2 ;;
+	esac
+}
+
+function bzmore () {
+	case $# in
+		1) bzcat $1 | $PAGER ;;
+		*) echo "usage: $0 <file>" >& 2 ;;
+	esac
+}
+
+function getcode () {
+	case $# in
+		1) perl -MJcode -MFileHandle -e '$f=FileHandle->new;$f->open("<$1") and do {while(<$f>){last if length $d > 2048; next if /^[\x00-\x7f]+$/; $d.=$_}; print scalar Jcode::getcode($d),"\n"}' ;;
+		*) perl -MJcode -e 'while(<STDIN>){last if length $d > 2048; $d.=$_}; print scalar Jcode::getcode($d),"\n"' ;;
+	esac
+}
+
+# locate + grep
+function lgrep () {
+        case $# in
+                1) locate "$1" | grep `pwd` ;;
+		2) locate "$1" | grep "$2" ;;
+                *) echo "usage: $0 <word> <pattern>" >& 2 ;;
+        esac
+}
+
+# local recursive copy using rsync(1)
+function rcopy () {
+	case $# in
+		2) rsync -auxtv $1 $2 ;;
+		*) echo "usage: $0 <from> <to>" >& 2 ;;
+	esac
+}
+
+function renicegrep () {
+	case $# in
+		1) ;;
+		*) echo "usage: $0 <name>" >& 2; return ;;
+	esac
+
+	pid=`ps -aux | grep -i $1 | grep -v grep | awk '{print $2}'`
+#	echo "pid = $pid"
+	if [ $pid > 0 ]; then
+		sudo renice -20 $pid
+	fi
+}
+
+function del () {
+	for file in $*; do
+		if [ -e $file ]; then
+			if [ -e ~/.trash/$file ]; then
+				echo "`basename $0`: $file already exists in your trash."
+			else
+				command mv $file ~/.trash/
+			fi
+		else
+			echo "`basename $0`: No such file or directory: $name"
+		fi
+	done
+}
+

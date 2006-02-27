@@ -1,0 +1,32 @@
+#
+# $URL$
+# $Id$
+
+echo "Loading $HOME/.zsh/aliases"
+
+alias dir='ls -lF'
+alias df='df -h'
+alias du='du -ackh'
+alias diff='diff -NBaur'
+alias scp='scp -p'
+alias lynx='lynx -cfg ~/.lynxrc'
+alias swapinfo='swapinfo -k'
+alias dvi2tty='dvi2tty -ql'
+
+# mistype recovery
+alias ,,='cd ../'
+alias //_='cd ../'
+alias ...='cd ../'
+
+alias myadmin='mysqladmin -u root -p'
+alias vtop='vmstat -nmM -c1000 -w2'
+
+#unalias rm >& /dev/null
+#unalias cp >& /dev/null
+#unalias mv >& /dev/null
+
+#alias pu=pushd
+#alias po=popd
+#alias push='pushd +1'
+
+
