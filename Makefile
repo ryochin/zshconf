@@ -24,7 +24,7 @@ install:
 		chmod 750 $(ZSHDIR); \
 	fi
 
-	for i in .zlogin .zshrc .zshenv .zprofile; do \
+	for i in .zlogin .zlogout .zshrc .zshenv .zprofile; do \
 		$(INSTALL_DATA) dot$$i $(ZSHBASE)/$$i; \
 	done
 

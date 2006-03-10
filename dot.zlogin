@@ -43,6 +43,9 @@ if [ -x `which subject` ]; then
   subject -c
 fi
 
+# launch ssh-agent1
+#eval `ssh-agent -c`
+
 # welcome message
 echo ''
 echo "*** How are you today, I'm ready to go. :-) ***"

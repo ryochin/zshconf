@@ -736,6 +736,7 @@ compctl -k "($svncmds)" \
 	- "r[copy,;]" -f \
 	- "r[cat,;]" -f \
 	- "r[import,;]" -f \
+	- "r[info,;]" -f \
 	- "r[revert,;]" -f \
 	- "r[propset,;]" -f \
 	- "r[checkout,;]" -k "(-r -q -N --username --password --no-auth-cache --non-interactive --config-dir --ignore-externals)" \
