@@ -45,6 +45,7 @@ fi
 
 # launch ssh-agent1
 #eval `ssh-agent -c`
+#ssh-add ~/.ssh/id_dsa
 
 # welcome message
 echo ''

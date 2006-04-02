@@ -210,7 +210,7 @@ function search_grep () {
 			return ;;
 	esac
 
-	nice -20 grep -anrI $1 ${dir}/* 2>/dev/null
+	nice -20 grep -anrI $1 ${dir}/* | grep -v '/.svn/' 2>/dev/null
 }
 
 function _perl_inc () {
