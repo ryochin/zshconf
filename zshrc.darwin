@@ -20,9 +20,13 @@ export SVN_EDITOR=$EDITOR
 #setenv LC_CTYPE ja_JP.eucJP
 
 alias tf='tail -0 -F'
-alias mi='open -a mi'
 #alias ee='/sw/bin/nano -w'
 alias fetch='wget -q'
 alias top='top -s 1 -o cpu'
 alias ipfw_ls='ipfw -at list'
+
+alias mi='open -a mi'
+alias jedit='open -a "Jedit X"'
+alias preview='open -a /Applications/Preview.app'
+alias fcd='cd `fcd.sh`'
 

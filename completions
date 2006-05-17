@@ -225,7 +225,7 @@ compctl -k '(create drop extended-status flush-hosts flush-logs flush-tables flu
 # apache
 #----------------------
 
-compctl -k '(configtest fullstatus help graceful restart start startssl status stop)' apachectl 
+compctl -k '(configtest fullstatus help graceful restart start startssl status stop graceful-stop)' apachectl 
 
 #----------------------
 # named
