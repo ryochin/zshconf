@@ -465,8 +465,11 @@ function _remote_files {
 }
 
 function _sshhosts () {
-#	reply=( ` cut -d' ' -f1 ~/.ssh/known_hosts | cut -d, -f1 ` )
-	reply=( ` (cut -d' ' -f1 ~/.ssh/known_hosts && cut -d' ' -f1 ~/.ssh/known_hosts2 ) | cut -d, -f1 ` )
+	if [ -f $HOME/.ssh/known_hosts2 ]; then
+		reply=( ` (cut -d' ' -f1 ~/.ssh/known_hosts && cut -d' ' -f1 ~/.ssh/known_hosts2 ) | cut -d, -f1 ` )
+	elif [ -f $HOME/.ssh/known_hosts ]; then
+		reply=( ` cut -d' ' -f1 ~/.ssh/known_hosts | cut -d, -f1 ` )
+	fi
 }
 
 #----------------------
@@ -737,6 +740,9 @@ compctl -k "($svncmds)" \
 	- "r[cat,;]" -f \
 	- "r[import,;]" -f \
 	- "r[info,;]" -f \
+	- "r[lock,;]" -f \
+	- "r[log,;]" -f \
+	- "r[unlock,;]" -f \
 	- "r[revert,;]" -f \
 	- "r[propset,;]" -f \
 	- "r[checkout,;]" -k "(-r -q -N --username --password --no-auth-cache --non-interactive --config-dir --ignore-externals)" \
@@ -748,6 +754,14 @@ compctl -k "($svnadmcmds)" \
 	-f \
 	svnadmin
 
+svnlookcmd=(author cat changed date diff dirs-changed help history info lock log propget proplist tree uuid youngest)
+
+compctl -k "($svnlookcmd)" \
+	- "r[cat,;]" -f \
+	- "r[info,;]" -f \
+	- "r[log,;]" -f \
+	- "r[tree,;]" -f \
+	-- svnlook
 
 ####################################################
 # 整理前、または使わないサンプル例

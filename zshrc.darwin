@@ -26,7 +26,13 @@ alias top='top -s 1 -o cpu'
 alias ipfw_ls='ipfw -at list'
 
 alias mi='open -a mi'
-alias jedit='open -a "Jedit X"'
+alias jedit='open -a /Applications/Jedit\ X\ Folder/Jedit\ X.app'
 alias preview='open -a /Applications/Preview.app'
 alias fcd='cd `fcd.sh`'
+
+# fink
+test -r /sw/bin/init.sh && . /sw/bin/init.sh
+
+# darwinports
+path=($path /opt/local/bin /opt/local/sbin)
 

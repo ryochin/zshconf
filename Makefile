@@ -10,12 +10,12 @@ ZSHDIR = $(ZSHBASE)/.zsh
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 640
 
-RIVISION = ` perl -e ' $$d = q|$$Rivision: 2$$|; $$d =~ s/^.+: (\d).+$$/$$1/; print $$d ' `
+REVISION = ` perl -e ' $$d = q|$$Revision: 2$$|; $$d =~ s/^.+: (\d).+$$/$$1/; print $$d ' `
 
 all:
 	
-risision:
-	echo "rivison is $(RIVISION)."
+revision:
+	echo "revison is $(REVISION)."
 
 install:
 
@@ -41,7 +41,7 @@ install:
 		$(INSTALL_DATA) $$i $(ZSHDIR)/$$i; \
 	done
 
-dist: clean
+dist: distclean
 
 	mkdir zshconf-r$(RIVISION)
 
@@ -59,7 +59,7 @@ dist: clean
 
 	tar zcvf zshconf-r$(RIVISION).tar.gz zshconf-r$(RIVISION)
 
-clean:
+distclean:
 	rm -rf zshconf-r$(RIVISION)
 	rm -f zshconf-r$(RIVISION).tar.gz
 

@@ -46,10 +46,6 @@ path=($path $HOME/bin)
 path=($path /usr/local/sysutil)
 path=($path /usr/ucb /usr/etc)	# for SunOS
 
-if [ ! -f $HOME/.ssh/known_hosts2 ]; then
-    touch $HOME/.ssh/known_hosts2
-fi
-
 # X
 if [ -x /usr/X11R6/bin/X ]; then
 	export X11HOME=/usr/X11R6

@@ -18,7 +18,7 @@ else
   MAILDIR=$HOME/Maildir; export MAILDIR
 fi
 
-MYSQL_PS1="mysql@`hostname -s`> "; export MYSQL_PS1
+export MYSQL_PS1="\u@`hostname -s`[\d]> "
 
 # aliases
 alias l='ls -lFAo'

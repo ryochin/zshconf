@@ -44,7 +44,7 @@ if [ -x `which subject` ]; then
 fi
 
 # launch ssh-agent1
-#eval `ssh-agent -c`
+#eval `ssh-agent`
 #ssh-add ~/.ssh/id_dsa
 
 # welcome message

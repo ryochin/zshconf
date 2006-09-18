@@ -78,6 +78,8 @@ if [ -f $ZUSERDIR/completions ]; then
   source $ZUSERDIR/completions
 fi
 
+# see $fpath
+autoload -U compinit ; compinit
 
 ### aliases
 
