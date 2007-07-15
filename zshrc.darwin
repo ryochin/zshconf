@@ -4,35 +4,38 @@
 
 echo "Loading $HOME/.zsh/zshrc.darwin"
 
-path=($path /sw/bin /sw/sbin /Applications /Developer/Tools)
+path=($path /sw/bin /sw/sbin /Applications /Developer/Tools /System/Library/CoreServices/)
 alias portstat='echo "not available on this OS."'
 
 LESSCHARSET=
 
 export EDITOR=ee
-#export EDITOR=nano
 export SVN_EDITOR=$EDITOR
 
+if [ -x /opt/local/bin/gls ]; then
+  alias ls='/opt/local/bin/gls --color'
+  function chpwd() { /opt/local/bin/gls --color -lF }
+fi
+
 # lang
-#export LANG=ja_JP.EUC
+#export LC_ALL=ja_JP.eucJP
+export LC_ALL=en_US
 
 # for jman
 #setenv LC_CTYPE ja_JP.eucJP
 
 alias tf='tail -0 -F'
+alias mi='open -a mi'
+alias jedit='open -a /Applications/Jedit\ X\ Folder/Jedit\ X.app'
+alias preview='open -a /Applications/Preview.app'
+
 #alias ee='/sw/bin/nano -w'
 alias fetch='wget -q'
 alias top='top -s 1 -o cpu'
 alias ipfw_ls='ipfw -at list'
-
-alias mi='open -a mi'
-alias jedit='open -a /Applications/Jedit\ X\ Folder/Jedit\ X.app'
-alias preview='open -a /Applications/Preview.app'
 alias fcd='cd `fcd.sh`'
 
-# fink
-test -r /sw/bin/init.sh && . /sw/bin/init.sh
-
-# darwinports
+# for MacPorts
 path=($path /opt/local/bin /opt/local/sbin)
+manpath=($manpath /opt/share/man /opt/local/man)
 

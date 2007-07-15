@@ -13,11 +13,16 @@ export EDITOR=ee
 #export LANG=ja_JP.eucJP
 
 # for jman
-export LC_CTYPE=ja_JP.eucJP
+#export LC_CTYPE=ja_JP.eucJP
 
 export LSCOLORS=$LS_COLORS
 
 alias ee='ee -i'
+
+if [ -x /compat/linux/bin/ls ]; then
+  alias ls='/compat/linux/bin/ls --color'
+  function chpwd() { /compat/linux/bin/ls --color -lF }
+fi
 
 # for FreeBSD 5.x
 alias /entropy='cd /etc'

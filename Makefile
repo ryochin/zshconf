@@ -10,10 +10,10 @@ ZSHDIR = $(ZSHBASE)/.zsh
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 640
 
-REVISION = ` perl -e ' $$d = q|$$Revision: 2$$|; $$d =~ s/^.+: (\d).+$$/$$1/; print $$d ' `
+REVISION = ` perl -e ' $$d = q|$$Revision$$d =~ s/^.+: (\d).+$$/$$1/; print $$d ' `
 
 all:
-	
+
 revision:
 	echo "revison is $(REVISION)."
 
@@ -43,23 +43,25 @@ install:
 
 dist: distclean
 
-	mkdir zshconf-r$(RIVISION)
+	mkdir zshconf-r$(REVISION)
 
 	for i in Makefile README.txt; do \
-		cp -p $$i zshconf-r$(RIVISION); \
+		cp -p $$i zshconf-r$(REVISION); \
 	done	
 
 	for i in .zlogin .zlogout .zshrc .zshenv .zprofile; do \
-		cp -p dot$$i zshconf-r$(RIVISION); \
+		cp -p dot$$i zshconf-r$(REVISION); \
 	done
 
 	for i in aliases completions functions lscolors zshoptions zshrc.bsd zshrc.darwin zshrc.gnu zshrc.user; do \
-		cp -p $$i zshconf-r$(RIVISION); \
+		cp -p $$i zshconf-r$(REVISION); \
 	done
 
-	tar zcvf zshconf-r$(RIVISION).tar.gz zshconf-r$(RIVISION)
+	tar zcvf zshconf-r$(REVISION).tar.gz zshconf-r$(REVISION)
 
 distclean:
-	rm -rf zshconf-r$(RIVISION)
-	rm -f zshconf-r$(RIVISION).tar.gz
+	rm -rf zshconf-r$(REVISION)
+	rm -f zshconf-r$(REVISION).tar.gz
+
+clean: distclean
 

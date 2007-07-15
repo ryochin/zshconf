@@ -90,7 +90,7 @@ function pkggrep() {
 
 # ll
 function ll () {
-    ls -lAFo $1 | ${PAGER} -C;
+    ls -lAFo $1 | ${PAGER}
 }
 
 # nmore - numeric more
@@ -183,7 +183,7 @@ function search_file() {
 			return ;;
 	esac
 
-	find ${dir} -type f | perl -lne "print if /${regex}/" 2>/dev/null
+	find ${dir} -type f | perl -lne "print if /${regex}/ && ! /\.(svn|csv)/" 2>/dev/null
 }
 
 
@@ -389,5 +389,9 @@ function del () {
 			echo "`basename $0`: No such file or directory: $name"
 		fi
 	done
+}
+
+function perlversion () {
+	perl -M$1 -e "print \$$1::VERSION, qq|\n|"   
 }
 

@@ -16,4 +16,4 @@ alias ee='nano -w'
 
 alias tf='tail -n 0 -f'
 alias top='top -d 1 -i'
-
+alias iptables_ls='iptables -L -vn --line-numbers'

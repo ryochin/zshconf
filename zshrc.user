@@ -9,8 +9,9 @@ echo "Loading $HOME/.zsh/zshrc.user"
 # env
 export PAGER=jless
 export LESSCHARSET=
-CVSROOT=$HOME/cvs; export CVSROOT
-SVNROOT=$HOME/svn; export SVNROOT
+export CVSROOT=$HOME/cvs
+export SVNROOT=$HOME/svn
+export ACK_COLOR_MATCH='underline white'
 
 if [ $UID = 0 ]; then
   MAILDIR=/var/qmail/alias/Maildir; export MAILDIR
@@ -20,12 +21,16 @@ fi
 
 export MYSQL_PS1="\u@`hostname -s`[\d]> "
 
+function chpwd() { ls -lF }
+
 # aliases
 alias l='ls -lFAo'
 alias lr='ls -RF'
 alias lf='ls -AF'
 alias lt='ls -lFAot'
 alias ltr='ls -lFAotr'
+alias lss='ls -lF | sort -n +4'
+alias lssr='ls -lF | sort -nr +4'
 alias d=dir
 
 #alias g='grep -a'
@@ -64,7 +69,7 @@ alias moon="perl -MAstro::MoonPhase -e 'printf qq/phase is %.1f\nillu  is %.1f %
 alias gd='dirs -v; echo -n "select number: " ; read newdir; cd -"$newdir"'
 alias files='file ./* | egrep -v "(empty|directory|symbolic|Permission denied)" '
 
-alias svn-addprops="svn propset svn:keywords 'Date Author URL Id' "
+alias svn-addprops="svn propset svn:keywords 'Date Author URL Id Revision' "
 
 # options
 alias gg='grep -an -B 5 -A 5'
@@ -155,4 +160,26 @@ function rprompt() {
 	*) RPROMPT="$RPROMPT_DEFAULT" ;;
     esac
 }
+
+functions crontab () {
+	if  [ $1 = -r ]; then
+		echo -n "Are you sure to delete your crontab ? [y/n] "
+		read ANSWER
+		case "$ANSWER" in
+			y | yes ) command crontab "$1" && echo "deleted." ;;
+		esac
+	else
+		command crontab "$1"
+	fi
+}
+
+function sethome() {
+	export MYHOME=`pwd`
+	echo "home: ${MYHOME}"
+}
+
+function gohome() {
+	chdir $MYHOME
+}
+
 

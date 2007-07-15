@@ -355,6 +355,12 @@ compctl -g '*(-/) *.pl *.PL *.pm *.PM *.pod' -K _perl_inc perldoc pod
 
 compctl -K _perl_inc corelist corelist.pl
 
+#----------------------                 
+# haskell
+#---------------------- 
+
+compctl -g '*(-/) *.hs *.hls' ghc runhugs runhaskell
+
 #----------------------
 # pkg
 #----------------------
@@ -734,6 +740,7 @@ compctl -k "($svncmds)" \
 	- "r[add,;]" -f \
 	- "r[delete,;]" -f \
 	- "r[diff,;]" -f \
+	- "r[di,;]" -f \
 	- "r[move,;]" -f \
 	- "r[rename,;]" -f \
 	- "r[copy,;]" -f \

@@ -19,9 +19,9 @@ fi
 mesg y
 
 # mail notification
-if [ `which biff` ]; then
-  biff y
-fi
+#if [ `which biff` ]; then
+#  biff y
+#fi
 
 # show system status
 uptime
@@ -39,9 +39,9 @@ echo '------------------------'
 #  from -c
 #fi
 
-if [ -x `which subject` ]; then
-  subject -c
-fi
+#if [ -x `which subject` ]; then
+#  subject -c
+#fi
 
 # launch ssh-agent1
 #eval `ssh-agent`
