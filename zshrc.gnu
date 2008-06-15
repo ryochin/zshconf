@@ -12,6 +12,7 @@ export EDITOR=vi
 # for jman
 #export LC_CTYPE=ja_JP.ujis
 
+alias ls='ls --color'
 alias ee='nano -w'
 
 alias tf='tail -n 0 -f'

@@ -4,7 +4,7 @@
 
 echo "Loading $HOME/.zsh/zshrc.darwin"
 
-path=($path /sw/bin /sw/sbin /Applications /Developer/Tools /System/Library/CoreServices/)
+path=($path ~/bin /opt/local/bin /opt/local/sbin /sw/bin /sw/sbin /Applications /Developer/Tools /System/Library/CoreServices/)
 alias portstat='echo "not available on this OS."'
 
 LESSCHARSET=
@@ -37,5 +37,5 @@ alias fcd='cd `fcd.sh`'
 
 # for MacPorts
 path=($path /opt/local/bin /opt/local/sbin)
-manpath=($manpath /opt/share/man /opt/local/man)
+manpath=($manpath /opt/share/man /opt/local/share/man)
 

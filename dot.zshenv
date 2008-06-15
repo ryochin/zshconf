@@ -12,6 +12,10 @@
 #PROMPT="%n@%l'%U%m%u[`jobcount()`]:%4~%# "
 PROMPT="%n@%l'%U%m%u[0]:%4~%# "
 
+autoload colors
+colors
+#PROMPT="%B%n%b@%l'%U%m%u[0]:%4~%{${fg[blue]}%}%#%{${reset_color}%} "
+
 RPROMPT='   %D{%Y.%m.%d %a %H:%M:%S}'
 
 #SPROMPT='zsh: correct '\''%R'\'' to '\''%r'\'' [nyae]? '
@@ -31,7 +35,11 @@ RPROMPT_DEFAULT="$RPROMPT"
 #DISPLAY="192.168.0.210:0.0"
 
 # term
-TERM=vt100
+TERM=xterm-color
+
+# mail
+#MAILPATH=/home/$USER/Maildir
+#MAILCHECK=60
 
 # surpress perl warnings
 export PERL_BADLANG=0

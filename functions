@@ -183,7 +183,7 @@ function search_file() {
 			return ;;
 	esac
 
-	find ${dir} -type f | perl -lne "print if /${regex}/ && ! /\.(svn|csv)/" 2>/dev/null
+	nice -20 find ${dir} -type f | perl -lne "print if /${regex}/ && ! /\.(svn|csv)/" 2>/dev/null
 }
 
 
@@ -197,7 +197,7 @@ function search_day() {
 		 return ;;
 	esac
 
-	find ${dir} -mtime -${day} \! -type d | xargs ls -ltr
+	nice -20 find ${dir} -mtime -${day} \! -type d | xargs ls -ltr
 }
 
 # recursive grep search

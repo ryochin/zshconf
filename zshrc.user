@@ -70,6 +70,7 @@ alias gd='dirs -v; echo -n "select number: " ; read newdir; cd -"$newdir"'
 alias files='file ./* | egrep -v "(empty|directory|symbolic|Permission denied)" '
 
 alias svn-addprops="svn propset svn:keywords 'Date Author URL Id Revision' "
+alias delds="find . -name '.DS_Store' | xargs rm -f"
 
 # options
 alias gg='grep -an -B 5 -A 5'
