@@ -6,29 +6,29 @@ echo "Loading $HOME/.zshrc"
 
 ### shell variables
 
-# zsh дм╗╚дже╖езеы╩╤┐Їд╬джд┴е╥е╣е╚еъб╩═·╬Є╡б╟╜б╦д╦┤╪д╣дыдтд╬
+# zsh уБМф╜┐уБЖуВ╖уВзуГлхдЙцХ░уБоуБЖуБбуГТуВ╣уГИуГкя╝Их▒ецн┤цйЯшГ╜я╝ЙуБлщЦвуБЩуВЛуВВуБо
 
 HISTFILE=$ZDOTDIR/.zsh_history
 HISTSIZE=256
 SAVEHIST=512
 if [ $UID = 0 ]; then
-  unset HISTFILE
-  SAVEHIST=0
+    unset HISTFILE
+    SAVEHIST=0
 fi
 
-# ╝л╩м░╩│░д╬ецб╝е╢д╬еэе░едеєбжеэе░евеже╚дЄ╔╜╝ид╣дыдшджд╦д╩ды
+# шЗкхИЖф╗ехдЦуБоуГжуГ╝уВ╢уБоуГнуВ░уВдуГ│уГ╗уГнуВ░уВвуВжуГИуВТшбичд║уБЩуВЛуВИуБЖуБлуБкуВЛ
 
 WATCH=notme
 
-# core е╒ебедеыд╬е╡еде║дЄ 0 д╦═▐└йд╣ды
+# core уГХуВбуВдуГлуБоуВ╡уВдуВ║уВТ 0 уБлцКСхИ╢уБЩуВЛ
 unlimit
 limit core 0
 limit -s
 
-# е╒ебедеы║ю└о╗■д╬е╟е╒ейеые╚д╬етб╝е╔дЄ╗╪─ъд╣ды
+# уГХуВбуВдуГлф╜ЬцИРцЩВуБоуГЗуГХуВйуГлуГИуБоуГвуГ╝уГЙуВТцМЗхоЪуБЩуВЛ
 umask 022
 
-# ├╝╦Ўд╬└▀─ъбзCtrl+H д╦ 1 ╩╕╗·║я╜№бвCtrl+C д╦│фдъ╣■д▀бвCtrl+Z д╦е╡е╣е┌еєе╔
+# члпцЬлуБошинхоЪя╝ЪCtrl+H уБл 1 цЦЗхнЧхЙКщЩдуАБCtrl+C уБлхЙ▓уВКш╛╝уБ┐уАБCtrl+Z уБлуВ╡уВ╣уГЪуГ│уГЙ
 stty erase '^H'
 stty intr '^C'
 stty susp '^Z'
@@ -36,15 +36,15 @@ stty susp '^Z'
 
 ### key bindings
 
-# zsh д╬енб╝е╨едеєе╔дЄ┤─╢н╩╤┐Ї EDITOR д╦┤╪дядщд║ emacs ╔ўд╦д╣ды
+# zsh уБоуВнуГ╝уГРуВдуГ│уГЙуВТчТ░хвГхдЙцХ░ EDITOR уБлщЦвуВПуВЙуБЪ emacs щвиуБлуБЩуВЛ
 
 bindkey -e				# EDITOR=vi -> bindkey -v
 #bindkey -v                              # EDITOR=vi -> bindkey -v
 
-# бж╣╘┴┤д╞д╟д╧д╩дпбвелб╝е╜еы░╠├╓длдщ┴░╩¤д└д▒дЄ║я╜№д╣дыдшджд╦╩╤╣╣
-# бжCtrl+Space д╦дшдые▐б╝еп░╠├╓длдщелб╝е╜еы░╠├╓д▐д╟дЄ╛├д╣дшджд╦╩╤╣╣
-# бжEsc+H д╟бвелб╝е╜еы┴░д╬├▒╕ьдЄ║я╜№б╩backward-kill-word дшдъ┬┐дсд╦╛├д╣б╦
-# бжEsc+. д╟бве│е▐еєе╔ещедеєд╬║╟╕хд╬░·┐ЇдЄ╖лдъ╩╓д╖┴▐╞■д╣ды
+# уГ╗шбМхЕиуБжуБзуБпуБкуБПуАБуВлуГ╝уВ╜уГлф╜Нч╜оуБЛуВЙхЙНцЦ╣уБауБСуВТхЙКщЩдуБЩуВЛуВИуБЖуБлхдЙцЫ┤
+# уГ╗Ctrl+Space уБлуВИуВЛуГЮуГ╝уВпф╜Нч╜оуБЛуВЙуВлуГ╝уВ╜уГлф╜Нч╜оуБ╛уБзуВТц╢ИуБЩуВИуБЖуБлхдЙцЫ┤
+# уГ╗Esc+H уБзуАБуВлуГ╝уВ╜уГлхЙНуБохНШшкЮуВТхЙКщЩдя╝Иbackward-kill-word уВИуВКхдЪуВБуБлц╢ИуБЩя╝Й
+# уГ╗Esc+. уБзуАБуВ│уГЮуГ│уГЙуГйуВдуГ│уБоцЬАх╛МуБох╝ХцХ░уВТч╣░уВКш┐ФуБЧцМ┐хЕеуБЩуВЛ
 
 bindkey '^U' backward-kill-line		# override kill-whole-line
 bindkey '^W' kill-region		# override backward-kill-word
@@ -52,18 +52,18 @@ bindkey '^[h' vi-backward-kill-word	# override run-help
 bindkey '^[.' copy-prev-word		# override insert-last-word
 
 
-# esc д╧╗╚ддд╦дпддд╬д╟╢п░·д╦ ctrl д╦│фдъ┐╢дыбг
+# esc уБпф╜┐уБДуБлуБПуБДуБоуБзх╝╖х╝ХуБл ctrl уБлхЙ▓уВКцМпуВЛуАВ
 bindkey '^B' backward-word
 bindkey '^F' forward-word
 
 
 
-## ░╩▓╝бв╕л─╠д╖дЄ╬╔дпд╣дыд┐дсд╦╩г┐Їе╒ебедеыд╦└┌дъ╩мд▒д╞ include д╖д╞ддды ##
-## б╩$ZUSERDIR д╧ .zprofile д╟╗╪─ъб╦                                     ##
+## ф╗еф╕ЛуАБшжЛщАЪуБЧуВТшЙпуБПуБЩуВЛуБЯуВБуБлшдЗцХ░уГХуВбуВдуГлуБлхИЗуВКхИЖуБСуБж include уБЧуБжуБДуВЛ ##
+## я╝И$ZUSERDIR уБп .zprofile уБзцМЗхоЪя╝Й                                     ##
 
 ### zsh options
 
-# zsh д╜д╬дтд╬д╬╞░║юдЄ╗╪─ъд╣дыеке╫е╖ечеєд╬└▀─ъ
+# zsh уБЭуБоуВВуБоуБохЛХф╜ЬуВТцМЗхоЪуБЩуВЛуВкуГЧуВ╖уГзуГ│уБошинхоЪ
 
 if [ -f $ZUSERDIR/zshoptions ]; then
   source $ZUSERDIR/zshoptions
@@ -72,7 +72,7 @@ fi
 
 ### completions
 
-# ╩ф┤░д╬└▀─ъдЄ╣╘дж compctl д╬└▀─ъе╒ебедеыдЄ╞╔д▀╣■др
+# шгЬхоМуБошинхоЪуВТшбМуБЖ compctl уБошинхоЪуГХуВбуВдуГлуВТшкнуБ┐ш╛╝уВА
 
 if [ -f $ZUSERDIR/completions ]; then
   source $ZUSERDIR/completions
@@ -83,7 +83,7 @@ autoload -U compinit ; compinit
 
 ### aliases
 
-# е│е▐еєе╔д╦╩╠╠╛дЄд─д▒ды alias д╬└▀─ъе╒ебедеыдЄ╞╔д▀╣■др
+# уВ│уГЮуГ│уГЙуБлхИехРНуВТуБдуБСуВЛ alias уБошинхоЪуГХуВбуВдуГлуВТшкнуБ┐ш╛╝уВА
 
 if [ -f $ZUSERDIR/aliases ]; then
   source $ZUSERDIR/aliases
@@ -92,7 +92,7 @@ fi
 
 ### functions
 
-# ╩г╗ид╩╡б╟╜дЄ╝┬╕╜д╣ды┤╪┐Ї function д╬└▀─ъе╒ебедеыдЄ╞╔д▀╣■др
+# шдЗщЫСуБкцйЯшГ╜уВТхоЯчП╛уБЩуВЛщЦвцХ░ function уБошинхоЪуГХуВбуВдуГлуВТшкнуБ┐ш╛╝уВА
 
 if [ -f $ZUSERDIR/functions ]; then
   source $ZUSERDIR/functions
@@ -101,7 +101,7 @@ fi
 
 ### color ls
 
-# ┐зд─дн ls д╬└▀─ъе╒ебедеыдЄ╞╔д▀╣■др
+# шЙ▓уБдуБН ls уБошинхоЪуГХуВбуВдуГлуВТшкнуБ┐ш╛╝уВА
 
 if [ -f $ZUSERDIR/lscolors ]; then
   source $ZUSERDIR/lscolors
@@ -110,7 +110,7 @@ fi
 
 ### User environment
 
-# ецб╝е╢╞╚╝лд╬└▀─ъе╒ебедеыдмдвдьд╨╞╔д▀╣■др
+# уГжуГ╝уВ╢чЛмшЗкуБошинхоЪуГХуВбуВдуГлуБМуБВуВМуБ░шкнуБ┐ш╛╝уВА
 
 if [ -f $ZUSERDIR/zshrc.user ]; then
   source $ZUSERDIR/zshrc.user

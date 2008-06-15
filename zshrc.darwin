@@ -4,30 +4,23 @@
 
 echo "Loading $HOME/.zsh/zshrc.darwin"
 
-path=($path ~/bin /opt/local/bin /opt/local/sbin /sw/bin /sw/sbin /Applications /Developer/Tools /System/Library/CoreServices/)
-alias portstat='echo "not available on this OS."'
+path=($path ~/bin /Applications /Developer/Applications/Utilities /Developer/Tools /System/Library/CoreServices/)
 
-LESSCHARSET=
+# for MacPorts
+path=($path /opt/local/bin /opt/local/sbin)
+manpath=($manpath /opt/share/man /opt/local/share/man)
 
-export EDITOR=ee
-export SVN_EDITOR=$EDITOR
-
+# ls
 if [ -x /opt/local/bin/gls ]; then
-  alias ls='/opt/local/bin/gls --color'
-  function chpwd() { /opt/local/bin/gls --color -lF }
+    alias ls='/opt/local/bin/gls --color'
+    function chpwd() { /opt/local/bin/gls --color -lF }
 fi
-
-# lang
-#export LC_ALL=ja_JP.eucJP
-export LC_ALL=en_US
-
-# for jman
-#setenv LC_CTYPE ja_JP.eucJP
 
 alias tf='tail -0 -F'
 alias mi='open -a mi'
 alias jedit='open -a /Applications/Jedit\ X\ Folder/Jedit\ X.app'
 alias preview='open -a /Applications/Preview.app'
+alias gc='open -a /Applications/GraphicConverter'
 
 #alias ee='/sw/bin/nano -w'
 alias fetch='wget -q'
@@ -35,7 +28,5 @@ alias top='top -s 1 -o cpu'
 alias ipfw_ls='ipfw -at list'
 alias fcd='cd `fcd.sh`'
 
-# for MacPorts
-path=($path /opt/local/bin /opt/local/sbin)
-manpath=($manpath /opt/share/man /opt/local/share/man)
+alias delds="find . -name '.DS_Store' | xargs rm -f"
 

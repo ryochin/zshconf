@@ -4,7 +4,7 @@
 
 echo "Loading $HOME/.zsh/functions"
 
-# csh ·Ï¤Î setenv ¤ò¥¨¥ß¥å¥ì¡¼¥È¤¹¤ë
+# csh ç³»ã® setenv ã‚’ã‚¨ãƒŸãƒ¥ãƒ¬ãƒ¼ãƒˆã™ã‚‹
 # shell> setenv
 function setenv () {
   ev=$1
@@ -12,17 +12,17 @@ function setenv () {
   export $ev="$*"
 }
 
-# ¥Í¥Ã¥È¥ï¡¼¥¯´Ä¶­¤ÇÎÉ¤¯»È¤¦ X ¤Î DISPLAY ¤ÎÀßÄê¤ò¡Ödisp ¥Û¥¹¥ÈÌ¾¡×°ìÈ¯¤Ç
+# ãƒãƒƒãƒˆãƒ¯ãƒ¼ã‚¯ç’°å¢ƒã§è‰¯ãä½¿ã† X ã® DISPLAY ã®è¨­å®šã‚’ã€Œdisp ãƒ›ã‚¹ãƒˆåã€ä¸€ç™ºã§
 function disp () {
   export DISPLAY="$*:0.0"
 }
 
-# ¥³¥Ş¥ó¥É°ì¸Ä¤À¤± root ¤Ç¼Â¹Ô¤¹¤ë´Ê°× sudo ¤ÎÎã¡ÊÍ×¥Ñ¥¹¥ï¡¼¥É¡Ë
+# ã‚³ãƒãƒ³ãƒ‰ä¸€å€‹ã ã‘ root ã§å®Ÿè¡Œã™ã‚‹ç°¡æ˜“ sudo ã®ä¾‹ï¼ˆè¦ãƒ‘ã‚¹ãƒ¯ãƒ¼ãƒ‰ï¼‰
 function sudo-lite () {
   su "$*"
 }
 
-# ps ¤Î½ĞÎÏ¤ÎÃæ¤«¤éÆÃÄê¤ÎÊ¸»úÎó¤ò¸¡º÷¤¹¤ë
+# ps ã®å‡ºåŠ›ã®ä¸­ã‹ã‚‰ç‰¹å®šã®æ–‡å­—åˆ—ã‚’æ¤œç´¢ã™ã‚‹
 # shell> psgrep mysql
 function psgrep () {
   case $SYSTEM {
@@ -55,7 +55,7 @@ function lsgrep () {
 	ls -1 | grep $* | xargs ls -la
 }
 
-# netstat ¤Î½ĞÎÏ¤ÎÃæ¤«¤éÆÃÄê¤ÎÊ¸»úÎó¤ò¸¡º÷¤¹¤ë
+# netstat ã®å‡ºåŠ›ã®ä¸­ã‹ã‚‰ç‰¹å®šã®æ–‡å­—åˆ—ã‚’æ¤œç´¢ã™ã‚‹
 # shell> netgrep 22
 function netgrep() {
   case $SYSTEM {
@@ -72,13 +72,13 @@ function netgrep() {
   }
 }
 
-# pkg_info ¤ÎÃæ¤«¤éÆÃÄê¤ÎÊ¸»úÎó¤ò¸¡º÷¤¹¤ë¡£
+# pkg_info ã®ä¸­ã‹ã‚‰ç‰¹å®šã®æ–‡å­—åˆ—ã‚’æ¤œç´¢ã™ã‚‹ã€‚
 
 function pkggrep() {
   pkg_info -aI | grep $* 
 }
 
-# precmd ¤È¤¤¤¦Ì¾Á°¤Î´Ø¿ô¤Ï¡¢¥×¥í¥ó¥×¥ÈÉ½¼¨¤ÎÁ°¤ËËè²ó¼Â¹Ô¤µ¤ì¤ëÆÃÊÌ¤Ê¤â¤Î
+# precmd ã¨ã„ã†åå‰ã®é–¢æ•°ã¯ã€ãƒ—ãƒ­ãƒ³ãƒ—ãƒˆè¡¨ç¤ºã®å‰ã«æ¯å›å®Ÿè¡Œã•ã‚Œã‚‹ç‰¹åˆ¥ãªã‚‚ã®
 #function precmd () {
 ## load=`uptime | cut -f 2 -d v | cut -f 1 -d , | cut -f 2 -d : | tr -d ' '`
 #  load=`uptime | sed -e 's/.*: \([^,]*\).*/\1/'`
@@ -94,12 +94,12 @@ function ll () {
 }
 
 # nmore - numeric more
-# ¹ÔÈÖ¹æÉÕ¤­ more
+# è¡Œç•ªå·ä»˜ã more
 function nmore () {
     cat -n $1 | sed -e 's/^ //' | ${PAGER}
 }
 
-# ´Ê°× jman2text
+# ç°¡æ˜“ jman2text
 function jman2txt () {
     jman $*|colcrt  > $*.jman ;
 }
@@ -173,7 +173,7 @@ function count () {
 	echo ' word(s)'
 }
 
-# ¥Ş¥Ã¥Á¤¹¤ë¥Õ¥¡¥¤¥ë¤ò¸¡º÷
+# ãƒãƒƒãƒã™ã‚‹ãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ¤œç´¢
 function search_file() {
 	regex=$1
 	case $# in
@@ -187,7 +187,7 @@ function search_file() {
 }
 
 
-# day Æü°ÊÆâ¤Ë¹¹¿·¤·¤¿¥Õ¥¡¥¤¥ë¤ò¸¡º÷
+# day æ—¥ä»¥å†…ã«æ›´æ–°ã—ãŸãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ¤œç´¢
 function search_day() {
 	day=$1
 	case $# in
@@ -266,7 +266,8 @@ function fetchfile () {
 }
 
 function epoch () {
-	perl -e 'print time,"\n"'
+#	perl -e 'print time,"\n"'
+	date "+%s"
 }
 
 # for PPerl (parsistent perl package)

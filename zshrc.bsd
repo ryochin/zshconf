@@ -6,22 +6,10 @@ echo "Loading $HOME/.zsh/zshrc.bsd"
 
 path=($path /stand /rescue)
 
-export EDITOR=ee
-
-# lang
-#export LANG=ja_JP.EUC
-#export LANG=ja_JP.eucJP
-
-# for jman
-#export LC_CTYPE=ja_JP.eucJP
-
-export LSCOLORS=$LS_COLORS
-
-alias ee='ee -i'
-
+# ls
 if [ -x /compat/linux/bin/ls ]; then
-  alias ls='/compat/linux/bin/ls --color'
-  function chpwd() { /compat/linux/bin/ls --color -lF }
+    alias ls='/compat/linux/bin/ls --color'
+    function chpwd() { /compat/linux/bin/ls --color -lF }
 fi
 
 # for FreeBSD 5.x
@@ -33,17 +21,5 @@ alias top='top -I -s 1 -o cpu'
 alias ps_jail='ps aux | grep "J "'
 alias ipfw_ls='ipfw -at list'
 alias get='fetch -aq'
-
-function precmd () {
-
-  epoch=`date "+%s"`   
-  if [ `expr $epoch % 3` != 0 ]; then 
-    return
-  fi
-
-  load=`uptime | sed -e 's/.*: \([^, ]*\).*/\1/'`
-  if [ $load -gt 2.0 ]; then
-    echo "zsh: load avg is $load !"
-  fi  
-}
+alias systat='systat 1'
 

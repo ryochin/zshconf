@@ -4,26 +4,52 @@
 
 echo "Loading $HOME/.zsh/zshrc.user"
 
+# system
 #umask 027
 
 # env
-export PAGER=jless
-export LESSCHARSET=
 export CVSROOT=$HOME/cvs
 export SVNROOT=$HOME/svn
 export ACK_COLOR_MATCH='underline white'
+export GZIP='-v9N'
 
+# lang
+#export LANG=en
+export LANG=ja_JP.UTF8
+export LC_CTYPE=ja_JP.UTF8
+
+# mail
 if [ $UID = 0 ]; then
-  MAILDIR=/var/qmail/alias/Maildir; export MAILDIR
+    MAILDIR=/var/qmail/alias/Maildir; export MAILDIR
 else
-  MAILDIR=$HOME/Maildir; export MAILDIR
+    MAILDIR=$HOME/Maildir; export MAILDIR
 fi
 
+# mysql prompt
 export MYSQL_PS1="\u@`hostname -s`[\d]> "
 
+# default function
 function chpwd() { ls -lF }
 
-# aliases
+# editor
+if [ -x /usr/local/bin/ee ]; then
+    export EDITOR=ee
+else
+    export EDITOR=vi
+    alias ee='nano -w'
+fi
+
+# pager
+export LESSCHARSET=
+if [ -x /usr/local/bin/lv ]; then
+    export PAGER=lv
+elif [ -x /usr/local/bin/jless ]; then
+    export PAGER=jless
+else
+    export PAGER=less
+fi
+
+# ls
 alias l='ls -lFAo'
 alias lr='ls -RF'
 alias lf='ls -AF'
@@ -33,46 +59,33 @@ alias lss='ls -lF | sort -n +4'
 alias lssr='ls -lF | sort -nr +4'
 alias d=dir
 
-#alias g='grep -a'
+# svn
+export SVN_EDITOR=$EDITOR
+alias ss='svn status'
+alias sd='svn diff'
+alias svn-addprops="svn propset svn:keywords 'Date Author URL Id Revision'"
+
+# command
 alias g='grep'
 alias psg=psgrep
 alias lg=lsgrep
 alias ns=netstat
 alias ng=netgrep
 alias av=asciiview
-
 alias mv='mv -i'
-alias subject-top='topless -s31 subject -nk'
-
-alias escape='perl -MURI::Escape -le "print URI::Escape::uri_escape(<>)"'
-
 alias c=cat
-#alias d='diff -bi'
-#alias e='emacs'
 alias h=head
 alias j='jobs -l'
-#alias m='more -c'
 alias n=nmore
-#alias p='pico -wz'
 alias s=sort
 alias t=tail
 alias m=$PAGER
 
-alias pd=perldoc
-alias pdm='perldoc -m'
-alias pdl='perldoc -l'
+# alias
 alias root='su -l'
-alias null='cat /dev/null >'
 alias tm=tmore
 
-alias moon="perl -MAstro::MoonPhase -e 'printf qq/phase is %.1f\nillu  is %.1f %%\n/, (phase)[0] * 30, (phase)[1] * 100'"
-alias gd='dirs -v; echo -n "select number: " ; read newdir; cd -"$newdir"'
-alias files='file ./* | egrep -v "(empty|directory|symbolic|Permission denied)" '
-
-alias svn-addprops="svn propset svn:keywords 'Date Author URL Id Revision' "
-alias delds="find . -name '.DS_Store' | xargs rm -f"
-
-# options
+# add options
 alias gg='grep -an -B 5 -A 5'
 alias tt='tail -36'
 alias pa='ps -aux'
@@ -80,13 +93,21 @@ alias ping='ping -c 5'
 alias ftp='ncftp -L'
 alias cdcontrol='cdcontrol -f /dev/acd0a'
 alias lock='lock -np'
+alias ntop='ntop -r1 -n'
+alias trafshow='trafshow -r1 -n'
+
+# perl
+alias pd=perldoc
+alias pdm='perldoc -m'
+alias pdl='perldoc -l'
+
+# utils
+alias null='cat /dev/null >'
+alias gd='dirs -v; echo -n "select number: " ; read newdir; cd -"$newdir"'
+alias files='file ./* | egrep -v "(empty|directory|symbolic|Permission denied)" '
 
 # read-only
 #alias mutt='mutt -R'
-
-alias systat='systat 1'
-alias ntop='ntop -r1 -n'
-alias trafshow='trafshow -r1 -n'
 
 # print help for me.
 function help(){
@@ -131,11 +152,7 @@ function help(){
 # see bash-prompt howto.
 function jobcount() {
 #        jobs|wc -l| awk '{print $1}'
-#	echo -n `jobs | wc -l | awk '{print $1}'`
-
-jobs > ~/.jobs_tmp;
-echo -n `cat ~/.jobs_tmp | wc -l | awk '{print $1}'`;
-
+	echo -n `jobs | wc -l | awk '{print $1}'`
 }
 
 # set prompt
@@ -173,6 +190,18 @@ functions crontab () {
 		command crontab "$1"
 	fi
 }
+
+#function precmd () {
+#  epoch=`date "+%s"`   
+#  if [ `expr $epoch % 3` != 0 ]; then 
+#    return
+#  fi
+#
+#  load=`uptime | sed -e 's/.*: \([^, ]*\).*/\1/'`
+#  if [ $load -gt 2.0 ]; then
+#    echo "zsh: load avg is $load !"
+#  fi  
+#}
 
 function sethome() {
 	export MYHOME=`pwd`

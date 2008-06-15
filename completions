@@ -5,95 +5,95 @@
 echo "Loading $HOME/.zsh/completions"
 
 #-----------------------------------------------------------------
-# ����Ū���䴰�о�
+# 基本的な補完対象
 #-----------------------------------------------------------------
 
-# -f    �ե�����̾/�ǥ��쥯�ȥ�̾
-# -/    �ѥ�̾
-# -c    ���ޥ��̾( alias, function, builtin, ͽ��̾ ��ޤ� )
-#   -F  function ̾
-#   -B  �������ޥ��̾(builtins)
-#   -m  �������ޥ��̾
-#   -w  ͽ��̾
-#   -a  alias ̾
-# -o    zsh option ̾
-# -v    �������ѿ�����ӴĶ��ѿ�
-#   -E  �Ķ��ѿ� (export ����Ƥ�����)
-# -j    �����̾ (����֤κǽ�Υ��ޥ��̾)
-#   -r  ư����Υ����̾
-#   -z  �����ڥ����Υ����̾
-# -u    �桼��̾
-# -A    ����̾
+# -f    ファイル名/ディレクトリ名
+# -/    パス名
+# -c    コマンド名( alias, function, builtin, 予約名 も含む )
+#   -F  function 名
+#   -B  内部コマンド名(builtins)
+#   -m  外部コマンド名
+#   -w  予約名
+#   -a  alias 名
+# -o    zsh option 名
+# -v    シェル変数および環境変数
+#   -E  環境変数 (export されているもの)
+# -j    ジョブ名 (ジョブの最初のコマンド名)
+#   -r  動作中のジョブ名
+#   -z  サスペンド中のジョブ名
+# -u    ユーザ名
+# -A    配列名
 
 #-----------------------------------------------------------------
-# �ü���䴰�о�
+# 特殊な補完対象
 #-----------------------------------------------------------------
 
-# -k <����>            �䴰�ꥹ�Ȥˤ��
-# -g <�ե�����̾Ÿ��>  (*/) �ʤ�
-# -s <substring>       man zshexpn �ˤ����ˡ�� <substring> ��Ÿ��
-# -K <function>        <function> ������ꤵ������� reply 
+# -k <配列>            補完リストによる
+# -g <ファイル名展開>  (*/) など
+# -s <substring>       man zshexpn による方法で <substring> を展開
+# -K <function>        <function> 内で設定される配列 reply 
 
 #-----------------------------------------------------------------
-# �䴰����������դ�����
+# 補完指定の前に付けるもの
 #-----------------------------------------------------------------
 
-# -Q          �䴰�� quote ���ʤ�
-# -P <ʸ����> �䴰������������ <ʸ����> ��Ƭ���դ���
-# -S <ʸ����> �䴰������������ <ʸ����> ��Ǹ���դ���
-# -X <����>   ������ɽ�����뤷���ޥå�������Το��� %n ��ɽ��
+# -Q          補完を quote しない
+# -P <文字列> 補完が成功したら <文字列> を頭に付ける
+# -S <文字列> 補完が成功したら <文字列> を最後に付ける
+# -X <説明>   説明を表示するし、マッチしたものの数は %n で表現
 
 #-----------------------------------------------------------------
-# ��ĥ�䴰 (-x)
+# 拡張補完 (-x)
 #-----------------------------------------------------------------
 
-# -x '<�ѥ�����1>' <�䴰����1> - '<�ѥ�����2>' <�䴰����2> .. -- �Ȥ���
+# -x '<パターン1>' <補完指定1> - '<パターン2>' <補完指定2> .. -- とする
 
-# �ѥ�����
-# s[<ʸ����>]            ���ߤ�ñ�줬 <ʸ����> �ǻϤޤ�ʤ� <�䴰>
-#                        s[<ʸ����1>][<ʸ����2>] �ʤ顢�ɤä���
-# S[<ʸ����>]            s ��Ʊ��������<ʸ����> ���䴰�оݤˤʤ�
-# p[<pos>]               ���ߤ�ñ�줬 <pos> ���ܤˤ���ʤ� <�䴰>
-# p[<from>,<to>]         ���ߤ�ñ�줬 <from> ���ܤ��� <to> ������ʤ� <�䴰>
-# c[<offset>,<ʸ����>]   ���ߤ�ñ�줫�� <offset> ���ܤ� <ʸ����> �ʤ� <�䴰>
-# C[<offset>,<�ѥ�����>] c ��Ʊ��������<�ѥ�����> ��Ȥ�
-# w[<index>,<ʸ����>]    <index> ���ܤ�ñ�줬 <ʸ����> �ʤ� <�䴰>
-# W[<index>,<�ѥ�����>]  <index> ���ܤ�ñ�줬 <�ѥ�����> �ʤ� <�䴰>
-# m[<min>,<max>]         ñ����� <min> ���� <max> �ʤ� <�䴰>
-# r[<ʸ����1>,<ʸ����2>] �������뤬 <ʸ����1> �� <ʸ����2> �δ֤ʤ� <�䴰>
-# R[<�ѥ�1>,<�ѥ�2>]     r ��Ʊ������ <�ѥ�����> ��Ȥ�
+# パターン
+# s[<文字列>]            現在の単語が <文字列> で始まるなら <補完>
+#                        s[<文字列1>][<文字列2>] なら、どっちか
+# S[<文字列>]            s と同じだが、<文字列> も補完対象になる
+# p[<pos>]               現在の単語が <pos> 番目にあるなら <補完>
+# p[<from>,<to>]         現在の単語が <from> 番目から <to> 番目中なら <補完>
+# c[<offset>,<文字列>]   現在の単語から <offset> 番目が <文字列> なら <補完>
+# C[<offset>,<パターン>] c と同じだが、<パターン> を使う
+# w[<index>,<文字列>]    <index> 番目の単語が <文字列> なら <補完>
+# W[<index>,<パターン>]  <index> 番目の単語が <パターン> なら <補完>
+# m[<min>,<max>]         単語数が <min> から <max> なら <補完>
+# r[<文字列1>,<文字列2>] カーソルが <文字列1> と <文字列2> の間なら <補完>
+# R[<パタ1>,<パタ2>]     r と同じだが <パターン> を使う
 
-### �������Ƥγ�ǧ
+### 設定内容の確認
 
-# compctl -L <command> �Ǹ��� <command> �����ꤵ��Ƥ������Ƥ��狼��
-# compctl -L ���ߤ�����򤽤Τޤ����褵���뤿��ν��Ϥ��Ф�
-# compctl �ǡ��������ꤵ��Ƥ������Ƥ����Ƥ��狼��
+# compctl -L <command> で現在 <command> に設定されている内容がわかる
+# compctl -L 現在の設定をそのまま復活させるための出力が出る
+# compctl で、現在設定されている全ての内容がわかる
 
 
 #-----------------------------------------------------------------
-# �ǥե���Ȥ�ư�� (-D -C -T)
+# デフォルトの動作 (-D -C -T)
 #-----------------------------------------------------------------
 
-# ���ޥ��ľ��Ǥϥե�����̾���ǥ��쥯�ȥ�̾���䴰
+# コマンド直後ではファイル名・ディレクトリ名を補完
 
 compctl -D -f
 
-# �������Ϥ��Ƥ��ʤ��Ȥ��ϥ��ޥ��̾���䴰
-# ���ޥ��̾���䴰���䤬�ʤ���дĶ��ѿ����䴰���������ʤ������� = ���ղ�
+# 何も入力していないときはコマンド名で補完
+# コマンド名に補完候補がなければ環境変数で補完し、成功なら末尾に = を付加
 
 compctl -C -c -f + -E -q -S '='
 
-# �ɤ�ʥ��ޥ��̾�ΤȤ��⡢-fn �Τ��Ȥϥե���ȥꥹ�Ȥ����䴰
+# どんなコマンド名のときも、-fn のあとはフォントリストから補完
 
 compctl -Tx 'c[-1,-fn]' -K _getfontlist
 
 
 #-----------------------------------------------------------------
-# zsh �������ޥ�� (builtins)
+# zsh 内部コマンド (builtins)
 #-----------------------------------------------------------------
 
-# cd �� * �˥ޥå�����ǥ��쥯�ȥ꤫�ǥ��쥯�ȥ�ؤΥ�󥯤��䴰
-# ���Ԥ����� .* �˥ޥå�����ǥ��쥯�ȥ꤫�ǥ��쥯�ȥ�ؤΥ�󥯤��䴰
+# cd は * にマッチするディレクトリかディレクトリへのリンクを補完
+# 失敗したら .* にマッチするディレクトリかディレクトリへのリンクを補完
 
 compctl -g '*(-/)' + -g '.*(/)' cd chdir dirs pushd rmdir dircmp
 #compctl -/ cd chdir dirs pushd
@@ -102,7 +102,7 @@ compctl -g '*(-/)' + -g '.*(/)' cd chdir dirs pushd rmdir dircmp
 # cd/pushd only directories or symbolic links to directories
 #compctl -g '*(-/)' cd pushd
 
-# alias/unalias �� alias ̾��setopt/unsetopt �ˤ� options �ʤ�
+# alias/unalias は alias 名、setopt/unsetopt には options など
 
 compctl -a alias unalias
 
@@ -118,7 +118,7 @@ compctl -s '$(setopt 2>/dev/null)' + -o + -x 's[no]' -o -- unsetopt
 compctl -s '$(unsetopt 2>/dev/null)' + -o + -x 's[no]' -o -- setopt
 compctl -s '${^fpath}/*(N:t)' autoload
 
-# kill �� PID �ޤ��ϥ����̾�����䴰
+# kill は PID またはジョブ名から補完
 
 #if [ $SYSTEM != sol -a $SYSTEM != sgi ]; then
 #  pscmd='ps -e'
@@ -131,8 +131,8 @@ compctl -j -P '%' + -s '`$pscmd | tail +2 | cut -c1-5`' wait
 compctl -j -P '%' + -s '`$pscmd | tail +2 | cut -c1-5`' + \
 	-x 's[-] p[1]' -k "($signals[1,-3])" -- kill
 
-# export �ϴĶ��ѿ����䴰�������������� = ���������դ���
-# ���ߤ�ñ�줬 XMODIFIERS= �ʤ� @im=kinput2 �⤷���� @im=vje ���䴰����ˤ���
+# export は環境変数で補完し、成功したら = を末尾に付ける
+# 現在の単語が XMODIFIERS= なら @im=kinput2 もしくは @im=vje を補完候補にする
 
 compctl -E -S '=' \
   -Q -x 's[XMODIFIERS=]' -Q -k '( @im=kinput2 @im=vje @im=_XWNMO )' \
@@ -181,7 +181,7 @@ compctl -x 'p[1]' -c - 'p[2,-1]' -k signals -- trap
 
 
 #-----------------------------------------------------------------
-# �ƥ��ޥ�ɤ�����
+# 各コマンドの設定
 #-----------------------------------------------------------------
 
 #----------------------
@@ -384,9 +384,9 @@ compctl -g "*(-/)" -x \
 # print etc.
 #----------------------
 
-# jlatex pkatex latex �ϥǥ��쥯�ȥ꤫�ǥ��쥯�ȥ�ؤΥ�󥯤� *.tex
-# dvi2ps xdvi dvi2tty jdvi2kps �� �ǥ��쥯�ȥ꤫�ǥ��쥯�ȥ�ؤΥ�󥯤� *.dvi
-# gv �� �ǥ��쥯�ȥ꤫�ǥ��쥯�ȥ�ؤΥ�󥯤� *.ps *.PS ... �Τ����줫
+# jlatex pkatex latex はディレクトリかディレクトリへのリンクか *.tex
+# dvi2ps xdvi dvi2tty jdvi2kps は ディレクトリかディレクトリへのリンクか *.dvi
+# gv は ディレクトリかディレクトリへのリンクか *.ps *.PS ... のいずれか
 
 compctl -g '*(-/) *.tex*' {,p,j}latex texi2dvi
 compctl -g '*(-/) *.dvi' xdvi dvi2{ps,tty} jdvi2kps dvipdf dvipdfm dvipdfmx
@@ -398,9 +398,9 @@ compctl -g '*(-/) *.ps *.PS *.eps *.epsi *.pdf *.PDF *.jpdf *.JPDF' gv
 # dd
 #----------------------
 
-# if= of= bs= skip= count= ���䴰����ˤ����������Ƥ�Ǹ�˥��ڡ���������ʤ�
-# ���ߤ�ñ�줬 if= �⤷���� of= �ǻϤޤ�ʤ�ե�����̾�⤷���ϥǥ��쥯�ȥ�̾��
-# ���ߤ�ñ�줬 bs= �ǻϤޤ�ʤ� 256 512 ... 65536 ���䴰����ˤ���
+# if= of= bs= skip= count= を補完候補にし、成功しても最後にスペースを入れない
+# 現在の単語が if= もしくは of= で始まるならファイル名もしくはディレクトリ名、
+# 現在の単語が bs= で始まるなら 256 512 ... 65536 を補完候補にする
 
 compctl -Q -S '' -k '( if= of= bs= skip= count= )' \
   -x 'S[(if|of)=]' -f \
@@ -414,11 +414,11 @@ compctl -Q -S '' -k '( if= of= bs= skip= count= )' \
 #	-q -S ',' - 'n[-1,=]' -X '<number>'  -- dd
 
 #----------------------
-# ���롼��̾�� NIS ��̵ͭ�˱������䴰
+# グループ名の NIS の有無に応じた補完
 #----------------------
 
-# groups, newgrp, chgrp, chown �Υ��롼��̾�� NIS �ޤ��� /etc/group �����䴰
-# �����Ǥ� i386/Linux �ˤ��� NIS ������Ƥ��ʤ�����
+# groups, newgrp, chgrp, chown のグループ名は NIS または /etc/group から補完
+# ここでは i386/Linux にだけ NIS を引いていない設定
 
 #if [ $SYSTEM = gnu -a $MACHTYPE != sparc ]; then
 #  groups=( "${${(f)$(</etc/group)}%%:*}" )
@@ -433,7 +433,7 @@ compctl -Q -S '' -k '( if= of= bs= skip= count= )' \
 #----------------------
 # umount
 #----------------------
-# umount �� mount ���ߤΥǥ��쥯�ȥ���䴰
+# umount は mount ずみのディレクトリを補完
 
 compctl -K _umounttab umount
 function _umounttab () { reply=( `mount | cut -d' ' -f3` ) }
@@ -441,9 +441,9 @@ function _umounttab () { reply=( `mount | cut -d' ' -f3` ) }
 #----------------------
 # ssh
 #----------------------
-# ssh �� ~/.ssh/known_hosts �����äƤ����Τ��䴰
-# scp �� ~/.ssh/known_hosts �����äƤ����Τ��䴰���������� : ���դ���
-# ���Ԥ�����ե�����⤷���ϥǥ��쥯�ȥ�̾���䴰
+# ssh は ~/.ssh/known_hosts に入っているものを補完
+# scp は ~/.ssh/known_hosts に入っているもので補完し、末尾に : を付ける
+# 失敗したらファイルもしくはディレクトリ名を補完
 
 compctl -K _sshhosts -k hosts -x 'c[-1,-l]' -u -- ssh ssh1 slogin slogin1
 #compctl -S ':' -K _sshhosts + -f scp
@@ -481,8 +481,8 @@ function _sshhosts () {
 #----------------------
 # man
 #----------------------
-# man �ϴĶ��ѿ� MANPATH �ʲ������ޥ˥奢��ڡ�������䴰
-# man <����> ���ȥޥ˥奢��� section <����> �����䴰
+# man は環境変数 MANPATH 以下の全マニュアルページより補完
+# man <数字> だとマニュアルの section <数字> から補完
 
 compctl -K _man_glob man jman whatis apropos
 
@@ -502,8 +502,8 @@ _man_glob () {
 #----------------------
 # jman
 #----------------------
-# jman �ϴĶ��ѿ� MANPATH �ʲ������ޥ˥奢��ڡ�������䴰
-# jman <����> ���ȥޥ˥奢��� section <����> �����䴰
+# jman は環境変数 MANPATH 以下の全マニュアルページより補完
+# jman <数字> だとマニュアルの section <数字> から補完
 
 compctl -K _jman_glob jman jman2txt
 
@@ -523,9 +523,9 @@ _jman_glob () {
 #----------------------
 # make, gmake
 #----------------------
-# make, gmake �ϥ����ȥǥ��쥯�ȥ�� GNUmakefile, makefile, Makefile ����
-# <�ۤ��ۤ�>: �ȤʤäƤ����Τ��䴰����
-# make -f <�ե�����̾> �ʤ餽�Υե����뤫���䴰����
+# make, gmake はカレントディレクトリの GNUmakefile, makefile, Makefile から
+# <ほげほげ>: となっているもので補完する
+# make -f <ファイル名> ならそのファイルから補完する
 
 compctl -K _makeentry -x 'c[-1,-f]' -f -- make gmake
 
@@ -562,16 +562,16 @@ function _makeentry () {
 #----------------------
 # tar, gtar
 #----------------------
-# tar, gtar �� 1 ���ܤǤ��䴰
-#   tvzf xvzf ... czf ���䴰
-#   ���ߤ�ñ�줬 -- �ǤϤ��ޤ�ʤ� atime-preserve ... help ���䴰
-#                   �Ĥ��Ǥ� 'available ..' ��ɽ��
-# 2 ���ܤ��䴰
-#   �ҤȤ�����ñ�줬 f �� z ��ޤ�Ǥ���� *.tgz *.tar.gz �ʤɤ��䴰
-#   ���Ԥ��ƤҤȤ�����ñ�줬 f ��ޤ�Ǥ���� *.tar �ʤɤ��䴰
-# 3 ���ܰʹߤ��䴰
-#   tar ����ȤΥꥹ�Ȥ��䴰
-# ����ּ��Ԥ�����ե�����̾���䴰
+# tar, gtar は 1 番目での補完
+#   tvzf xvzf ... czf を補完
+#   現在の単語が -- ではじまるなら atime-preserve ... help を補完
+#                   ついでに 'available ..' を表示
+# 2 番目の補完
+#   ひとつ前の単語が f か z を含んでいれば *.tgz *.tar.gz などを補完
+#   失敗してひとつ前の単語が f を含んでいれば *.tar などを補完
+# 3 番目以降の補完
+#   tar の中身のリストを補完
+# ぜんぶ失敗したらファイル名を補完
 
 compctl -f -x \
        's[--]' -Q -k '(atime-preserve remove-files checkpoint \
@@ -585,7 +585,7 @@ compctl -f -x \
        'p[3,-1]' -K _getfilenames \
     -- tar gtar
 
-# tar.Z, tar.gz, tgz �����Ƥ��֤�
+# tar.Z, tar.gz, tgz の内容を返す
 
 function _getfilenames () {
   local a
@@ -699,7 +699,7 @@ compctl -K _kld kldload kldunload
 #----------------------
 
 # http://nmnl.jp/diary/20030512.html#p03
-# ~/tmp/apt-pkgnames �ϡ�apt-cache pkgnames > ~/tmp/apt-pkgnames �Ǥ��餫�����äƤ���
+# ~/tmp/apt-pkgnames は、apt-cache pkgnames > ~/tmp/apt-pkgnames であらかじめ作っておく
 # shell> alias apt-update='sudo apt-get update;apt-cache pkgnames > ~/tmp/pkgnames'
 
 compctl -k '(update upgrade install remove source build-dep dist-upgrade dselect-upgrade clean autoclean check)' \
@@ -771,7 +771,7 @@ compctl -k "($svnlookcmd)" \
 	-- svnlook
 
 ####################################################
-# ���������ޤ��ϻȤ�ʤ�����ץ���
+# 整理前、または使わないサンプル例
 ####################################################
 
 # By Bart Schaefer
@@ -914,10 +914,10 @@ compctl -s '$(rpm -qa)' \
 #------------------------------------------------------------------------------
 
 #----------------------
-# �ե���Ȥ�����˼�� X �Υ��饤�����
+# フォントを引数に取る X のクライアント
 #----------------------
 
-# xlsfont ���� font �� list ��Ȥ����
+# xlsfont から font の list をとりだす
 
 function _getfontlist (){
   local grephead
@@ -943,8 +943,8 @@ function _getfontlist (){
   fi
 }
 
-# xfd �Ǥ� -display ... -fn ���䴰��-�ۤ��ۤ� �ˤĤ��Ƥ���­��ɽ��
-# �ҤȤĤޤ��� -fn �ʤ�ե���ȥꥹ�Ȥ��䴰
+# xfd では -display ... -fn を補完、-ほげほげ については補足を表示
+# ひとつまえが -fn ならフォントリストを補完
 
 compctl -x \
   'C[-1,-display]' -X "<<X server to contacti ex)localhost:0.0>>" - \
@@ -956,9 +956,9 @@ compctl -x \
   'p[1,-1]' -k '(-display -geometry -start -box -center -rows -columns -fn)' \
   -- xfd
 
-# rxvt �� -fn -fk �Τ��Ȥϥե���ȥꥹ��
-# kterm �� -fn -fk -fr �Τ��Ȥϥե���ȥꥹ��
-# muel �� -fontset �Τ��Ȥϥե���ȥꥹ��
+# rxvt で -fn -fk のあとはフォントリスト
+# kterm で -fn -fk -fr のあとはフォントリスト
+# muel で -fontset のあとはフォントリスト
 
 #compctl -x 'c[-1,-fn]' -K _getfontlist - -- xterm
 compctl -x 'C[-1,-f(n|k)]' -K _getfontlist - -- rxvt

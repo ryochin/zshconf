@@ -4,139 +4,139 @@
 
 echo "Loading $HOME/.zsh/zshoptions"
 
-# ʣ���� zsh ��Ʊ���˻Ȥ����ʤ� history �ե�����˾�񤭤����ɲä���
+# 複数の zsh を同時に使う時など history ファイルに上書きせず追加する
 setopt append_history
 
-# ���ꤷ�����ޥ��̾���ʤ����ǥ��쥯�ȥ�̾�Ȱ��פ������ cd ����
+# 指定したコマンド名がなく、ディレクトリ名と一致した場合 cd する
 setopt auto_cd
 
-# �䴰���䤬ʣ��������ˡ�����ɽ������
+# 補完候補が複数ある時に、一覧表示する
 setopt auto_list
 
-# �䴰������Tab, Ctrl+I) ��Ϣ�Ǥ�������ǽ���䴰�����ư���䴰����
+# 補完キー（Tab, Ctrl+I) を連打するだけで順に補完候補を自動で補完する
 setopt auto_menu
 
-# ���å����б��ʤɤ�ưŪ���䴰����
+# カッコの対応などを自動的に補完する
 setopt auto_param_keys
 
-# �ǥ��쥯�ȥ�̾���䴰�������� / ��ưŪ���ղä��������䴰��������
+# ディレクトリ名の補完で末尾の / を自動的に付加し、次の補完に備える
 setopt auto_param_slash
 
-# �Ǹ夬�ǥ��쥯�ȥ�̾�ǽ���äƤ����������� / ��ưŪ�˼�����
+# 最後がディレクトリ名で終わっている場合末尾の / を自動的に取り除く
 #setopt auto_remove_slash
 
-# �����ڥ����Υץ�������Ʊ�����ޥ��̾��¹Ԥ������ϥꥸ�塼�ह��
+# サスペンド中のプロセスと同じコマンド名を実行した場合はリジュームする
 #setopt auto_resume
 
-# �ӡ��ײ����Ĥ餵�ʤ��褦�ˤ���
+# ビープ音を鳴らさないようにする
 setopt NO_beep
 
-# {a-c} �� a b c ��Ÿ�����뵡ǽ��Ȥ���褦�ˤ���
+# {a-c} を a b c に展開する機能を使えるようにする
 setopt brace_ccl
 
-# �������ޥ�ɤ� echo �� BSD �ߴ��ˤ���
+# 内部コマンドの echo を BSD 互換にする
 setopt bsd_echo
 
-# ����ܥ�å���󥯤ϼ��Τ��ɤ��褦�ˤʤ�
+# シンボリックリンクは実体を追うようになる
 setopt chase_links
 
-# ��¸�Υե�������񤭤��ʤ��褦�ˤ���
+# 既存のファイルを上書きしないようにする
 #setopt clobber
 
-# ���ޥ�ɤΥ��ڥ�����å��򤹤�
+# コマンドのスペルチェックをする
 setopt correct
 
-# ���ޥ�ɥ饤�����ƤΥ��ڥ�����å��򤹤�
+# コマンドライン全てのスペルチェックをする
 #setopt correct_all
 
-# =command �� command �Υѥ�̾��Ÿ������
+# =command を command のパス名に展開する
 setopt equals
 
-# �ե�����̾�� #, ~, ^ �� 3 ʸ��������ɽ���Ȥ��ư���
+# ファイル名で #, ~, ^ の 3 文字を正規表現として扱う
 setopt extended_glob
 
-# zsh �γ��ϡ���λ�����ҥ��ȥ�ե�����˽񤭹���
+# zsh の開始・終了時刻をヒストリファイルに書き込む
 #setopt extended_history
 
-# Ctrl+S/Ctrl+Q �ˤ��ե��������Ȥ�ʤ��褦�ˤ���
+# Ctrl+S/Ctrl+Q によるフロー制御を使わないようにする
 setopt NO_flow_control
 
-# �ƥ��ޥ�ɤ��¹Ԥ����Ȥ��˥ѥ���ϥå���������
+# 各コマンドが実行されるときにパスをハッシュに入れる
 #setopt hash_cmds
 
-# ľ����Ʊ�����ޥ�ɥ饤��ϥҥ��ȥ���ɲä��ʤ�
+# 直前と同じコマンドラインはヒストリに追加しない
 setopt hist_ignore_dups
 
-# ���ޥ�ɥ饤�����Ƭ�����ڡ����ǻϤޤ���ҥ��ȥ���ɲä��ʤ�
+# コマンドラインの先頭がスペースで始まる場合ヒストリに追加しない
 #setopt hist_ignore_space
 
-# �ҥ��ȥ��ƤӽФ��Ƥ���¹Ԥ���֤˰�ö�Խ��Ǥ�����֤ˤʤ�
+# ヒストリを呼び出してから実行する間に一旦編集できる状態になる
 setopt hist_verify
 
-# �����뤬��λ���Ƥ�΢����֤� HUP �����ʥ������ʤ��褦�ˤ���
+# シェルが終了しても裏ジョブに HUP シグナルを送らないようにする
 setopt NO_hup
 
-# Ctrl+D �ǤϽ�λ���ʤ��褦�ˤʤ��exit, logout �ʤɤ�Ȥ���
+# Ctrl+D では終了しないようになる（exit, logout などを使う）
 #setopt ignore_eof
 
-# ���ޥ�ɥ饤��Ǥ� # �ʹߤ򥳥��Ȥȸ��ʤ�
+# コマンドラインでも # 以降をコメントと見なす
 #setopt interactive_comments
 
-# auto_list ���䴰��������ǡ�ls -F �Τ褦�˥ե�����μ��̤�ޡ���ɽ��
+# auto_list の補完候補一覧で、ls -F のようにファイルの種別をマーク表示
 setopt list_types
 
-# �������ޥ�� jobs �ν��Ϥ�ǥե���Ȥ� jobs -l �ˤ���
+# 内部コマンド jobs の出力をデフォルトで jobs -l にする
 setopt long_list_jobs
 
-# ���ޥ�ɥ饤��ΰ����� --prefix=/usr �ʤɤ� = �ʹߤǤ��䴰�Ǥ���
+# コマンドラインの引数で --prefix=/usr などの = 以降でも補完できる
 setopt magic_equal_subst
 
-# �᡼�륹�ס��� $MAIL ���ɤޤ�Ƥ������˥󥰤�ɽ������
+# メールスプール $MAIL が読まれていたらワーニングを表示する
 #setopt mail_warning
 
-# �ե�����̾��Ÿ���ǥǥ��쥯�ȥ�˥ޥå�������������� / ���ղä���
+# ファイル名の展開でディレクトリにマッチした場合末尾に / を付加する
 setopt mark_dirs
 
-# �䴰���䤬ʣ�������������ɽ�� (auto_list) �����������˺ǽ�θ�����䴰����
+# 補完候補が複数ある時、一覧表示 (auto_list) せず、すぐに最初の候補を補完する
 setopt menu_complete
 
-# ʣ���Υ�����쥯�Ȥ�ѥ��פʤɡ�ɬ�פ˱����� tee �� cat �ε�ǽ���Ȥ���
+# 複数のリダイレクトやパイプなど、必要に応じて tee や cat の機能が使われる
 setopt multios
 
-# �ե�����̾��Ÿ���ǡ������ǤϤʤ�����Ū�˥����Ȥ����褦�ˤʤ�
+# ファイル名の展開で、辞書順ではなく数値的にソートされるようになる
 setopt numeric_glob_sort
 
-# ���ޥ��̾�� / ���ޤޤ�Ƥ���Ȥ� PATH ��Υ��֥ǥ��쥯�ȥ��õ��
+# コマンド名に / が含まれているとき PATH 中のサブディレクトリを探す
 #setopt path_dirs
 
-# 8 �ӥå��ܤ��̤��褦�ˤʤꡢ���ܸ�Υե�����̾�ʤɤ򸫤��褦�ˤʤ�
+# 8 ビット目を通すようになり、日本語のファイル名などを見れるようになる
 setopt print_eightbit
 
-# ����ͤ� 0 �ʳ��ξ�罪λ�����ɤ�ɽ������
+# 戻り値が 0 以外の場合終了コードを表示する
 #setopt print_exit_value
 
-# �ǥ��쥯�ȥꥹ���å���Ʊ���ǥ��쥯�ȥ���ɲä��ʤ��褦�ˤʤ�
+# ディレクトリスタックに同じディレクトリを追加しないようになる
 #setopt pushd_ignore_dups
 
-# pushd ������ʤ��Ǽ¹Ԥ������ pushd $HOME �ȸ��ʤ����
+# pushd を引数なしで実行した場合 pushd $HOME と見なされる
 #setopt pushd_to_home
 
-# rm * �ʤɤκݡ����������ƤΥե������ä����ɤ����γ�ǧ���ʤ��褦�ˤʤ�
+# rm * などの際、本当に全てのファイルを消して良いかの確認しないようになる
 #setopt rm_star_silent
 
-# rm_star_silent �εդǡ�10 �ô�ȿ�����ʤ��ʤꡢƬ����ޤ����֤�Ϳ������
+# rm_star_silent の逆で、10 秒間反応しなくなり、頭を冷ます時間が与えられる
 #setopt rm_star_wait
 
-# for, repeat, select, if, function �ʤɤǴ�άʸˡ���Ȥ���褦�ˤʤ�
+# for, repeat, select, if, function などで簡略文法が使えるようになる
 setopt short_loops
 
-# �ǥե���Ȥ�ʣ���ԥ��ޥ�ɥ饤���Խ��ǤϤʤ��������Խ��⡼�ɤˤʤ�
+# デフォルトの複数行コマンドライン編集ではなく、１行編集モードになる
 #setopt single_line_zle
 
-# ���ޥ�ɥ饤�󤬤ɤΤ褦��Ÿ������¹Ԥ��줿����ɽ������褦�ˤʤ�
+# コマンドラインがどのように展開され実行されたかを表示するようになる
 #setopt xtrace
 
-# �ե�����κǽ��Ԥ�ץ���ץȤ���񤭤���Τ���������
+# ファイルの最終行をプロンプトが上書きするのを抑制する
 #unsetopt PROMPT_CR
 
 

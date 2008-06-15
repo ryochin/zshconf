@@ -10,7 +10,7 @@ ZSHDIR = $(ZSHBASE)/.zsh
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 640
 
-REVISION = ` perl -e ' $$d = q|$$Revision$$d =~ s/^.+: (\d).+$$/$$1/; print $$d ' `
+REVISION = ` perl -e ' $$d = q|$$Revision$$|; $$d =~ s/^.+: (\d).+$$/$$1/; print $$d ' `
 
 all:
 

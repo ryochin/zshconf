@@ -4,7 +4,7 @@
 
 echo "Loading $HOME/.zsh/lscolors"
 
-# color-ls คฮฟงค๒ภ฿ฤ๊คนค๋
+# color-ls ใฎ่ฒใ’่จญๅฎใใ
 
 LS_COLORS="fi=37:di=36:ex=32:ln=34:bd=33:cd=33:pi=35:so=35"
 LS_COLORS="$LS_COLORS:*.gz=31:*.Z=31:*.lzh=31:*.zip=31:*.bz2=31"
@@ -18,6 +18,6 @@ LS_COLORS="$LS_COLORS:*.htm=35:*.html=35:*.java=35:*.class=32"
 LS_COLORS="$LS_COLORS:*.c=35:*.h=35:*.C=35:*.c++=35"
 LS_COLORS="$LS_COLORS:*.tex=35:*~=0"
 
-# บวธๅคห export คทคฦอญธ๚คหคนค๋
+# ๆ€ๅพใซ export ใ—ใฆๆๅนใซใใ
 
 export LS_COLORS

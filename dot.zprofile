@@ -16,20 +16,20 @@ case $OSTYPE {
   darwin*)	export SYSTEM=darwin ;;    # MacOSX
 }
 
-# ZDOTDIR д╧ zsh д╬╕─┐══╤└▀─ъе╒ебедеыдЄ├╡д╣е╟егеьепе╚еъдЄ╗╪─ъд╣ды
+# ZDOTDIR уБп zsh уБохАЛф║║чФишинхоЪуГХуВбуВдуГлуВТцОвуБЩуГЗуВгуГмуВпуГИуГкуВТцМЗхоЪуБЩуВЛ
 
 if [ -z $ZDOTDIR ]; then
   export ZDOTDIR=$HOME
 fi
 
-# └┌дъ╩мд▒д┐└▀─ъе╒ебедеыдЄ╞╔д▀╣■дре╟егеьепе╚еъдЄ╗╪─ъд╣ды
+# хИЗуВКхИЖуБСуБЯшинхоЪуГХуВбуВдуГлуВТшкнуБ┐ш╛╝уВАуГЗуВгуГмуВпуГИуГкуВТцМЗхоЪуБЩуВЛ
 
 export ZUSERDIR=$ZDOTDIR/.zsh
 
 
 ### System specific environment
 
-# ┤─╢н╩╤┐Їб╩PATH д╩д╔б╦д╬ OS ╩╠└▀─ъе╒ебедеыдЄ╞╔д▀╣■др
+# чТ░хвГхдЙцХ░я╝ИPATH уБкуБйя╝ЙуБо OS хИешинхоЪуГХуВбуВдуГлуВТшкнуБ┐ш╛╝уВА
 
 if [ -f $ZUSERDIR/zshrc.$SYSTEM ]; then
   source $ZUSERDIR/zshrc.$SYSTEM
@@ -37,20 +37,6 @@ fi
 
 # man path
 export MANPATH="/usr/share/man:/usr/X11R6/man:/usr/local/man:/var/qmail/man:$HOME/man:."
-
-
-### environment variables
-
-# ╢ж─╠д╣ды┤─╢н╩╤┐ЇдЄ└▀─ъд╣ды
-
-#export LESSCHARSET=japanese-euc
-export LESSCHARSET=japanese
-#export LESS='-irqMM'
-export LESS='-iqMM'
-unset  LESSOPEN
-export GZIP='-v9N'
-export XMODIFIERS=@im=kinput2
-#export XMODIFIERS=@im=_XWNMO
 
 
 
