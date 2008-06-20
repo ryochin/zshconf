@@ -35,7 +35,9 @@ RPROMPT_DEFAULT="$RPROMPT"
 #DISPLAY="192.168.0.210:0.0"
 
 # term
-TERM=xterm-color
+#TERM=vt100
+TERM=xterm
+#TERM=xterm-color
 
 # mail
 #MAILPATH=/home/$USER/Maildir

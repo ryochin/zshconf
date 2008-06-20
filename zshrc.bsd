@@ -7,9 +7,9 @@ echo "Loading $HOME/.zsh/zshrc.bsd"
 path=($path /stand /rescue)
 
 # ls
-if [ -x /compat/linux/bin/ls ]; then
-    alias ls='/compat/linux/bin/ls --color'
-    function chpwd() { /compat/linux/bin/ls --color -lF }
+if [ -x /usr/local/bin/gls ]; then
+    alias ls='/usr/local/bin/gls --color'
+    function chpwd() { /usr/local/bin/gls --color -lF }
 fi
 
 # for FreeBSD 5.x

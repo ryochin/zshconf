@@ -14,9 +14,10 @@ export ACK_COLOR_MATCH='underline white'
 export GZIP='-v9N'
 
 # lang
-#export LANG=en
-export LANG=ja_JP.UTF8
-export LC_CTYPE=ja_JP.UTF8
+export LANG=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
+#export LANG=ja_JP.UTF-8
+#export LC_CTYPE=ja_JP.UTF-8
 
 # mail
 if [ $UID = 0 ]; then

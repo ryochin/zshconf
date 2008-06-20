@@ -16,11 +16,19 @@ if [ -x /opt/local/bin/gls ]; then
     function chpwd() { /opt/local/bin/gls --color -lF }
 fi
 
+# emacs
+if [ -e /Applications/Emacs.app ]; then
+    emacs='open -a Emacs.app'
+fi
+
 alias tf='tail -0 -F'
+
+# open with
 alias mi='open -a mi'
 alias jedit='open -a /Applications/Jedit\ X\ Folder/Jedit\ X.app'
 alias preview='open -a /Applications/Preview.app'
 alias gc='open -a /Applications/GraphicConverter'
+alias xcode='open -a /Developer/Applications/Xcode.app'
 
 #alias ee='/sw/bin/nano -w'
 alias fetch='wget -q'
