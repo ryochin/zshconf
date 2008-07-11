@@ -40,8 +40,8 @@ TERM=xterm
 #TERM=xterm-color
 
 # mail
-#MAILPATH=/home/$USER/Maildir
-#MAILCHECK=60
+#MAILPATH=$HOME/Maildir
+#MAILCHECK=120
 
 # surpress perl warnings
 export PERL_BADLANG=0

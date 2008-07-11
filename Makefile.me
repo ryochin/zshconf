@@ -10,7 +10,7 @@ ZSHDIR = $(ZSHBASE)/.zsh
 INSTALL = /usr/bin/install -c
 INSTALL_DATA = ${INSTALL} -m 640
 
-REVISION = ` perl -e ' $$d = q|$$Revision$$|; $$d =~ s/^.+: (\d).+$$/$$1/; print $$d ' `
+REVISION = ` perl -e ' $$d = q|$$Revision$$|; $$d =~ s/^.+: (\d+).+$$/$$1/; print $$d ' `
 
 all:
 
@@ -41,6 +41,10 @@ install:
 		$(INSTALL_DATA) $$i $(ZSHDIR)/$$i; \
 	done
 
+	if [ `uname` = "Darwin" -a -e /usr/share/zsh/site-functions ]; then \
+		sudo $(INSTALL_DATA) site-functions/_port /usr/share/zsh/site-functions; \
+	fi
+
 dist: distclean
 
 	mkdir zshconf-r$(REVISION)
@@ -56,6 +60,9 @@ dist: distclean
 	for i in aliases completions functions lscolors zshoptions zshrc.bsd zshrc.darwin zshrc.gnu zshrc.user; do \
 		cp -p $$i zshconf-r$(REVISION); \
 	done
+
+	mkdir zshconf-r$(REVISION)/site-functions
+	cp -p site-functions/_port zshconf-r$(REVISION)/site-functions
 
 	tar zcvf zshconf-r$(REVISION).tar.gz zshconf-r$(REVISION)
 

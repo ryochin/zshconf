@@ -1,5 +1,12 @@
 # zshconf
 
-* type 'make -f Makefile.me install', but ALL FILES WILL BE OVERWRITTEN IF THEY EXIST !!
+・完全に無保証です。ご自身の責任において使用してください。
 
-* no warranty.
+・次のようにすると、あなたのホームディレクトリにファイルを放り込みます。
+
+注意：すでにファイルがあったら上書きされます！！
+注意：すでにファイルがあったら上書きされます！！
+注意：すでにファイルがあったら上書きされます！！
+
+make -f Makefile.me install
+
