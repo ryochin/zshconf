@@ -110,6 +110,9 @@ alias files='file ./* | egrep -v "(empty|directory|symbolic|Permission denied)" 
 # read-only
 #alias mutt='mutt -R'
 
+#
+compctl -f -x 'p[1,2]' -g "*(-/) *.(gz|bz2|tgz|tbz2*|zip)"        -- extract
+
 # print help for me.
 function help(){
 	echo "

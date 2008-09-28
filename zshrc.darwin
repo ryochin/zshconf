@@ -6,6 +6,8 @@ echo "Loading $HOME/.zsh/zshrc.darwin"
 
 path=($path ~/bin /Applications /Developer/Applications/Utilities /Developer/Tools /System/Library/CoreServices/)
 
+export JAVA_HOME=/Library/Java/Home
+
 # for MacPorts
 path=($path /opt/local/bin /opt/local/sbin)
 manpath=($manpath /opt/share/man /opt/local/share/man)

@@ -107,4 +107,9 @@ if [ -x /usr/local/majordomo/bin ]; then
 	path=($path /usr/local/majordomo/bin)
 fi
 
+# tetex
+if [ -x /usr/local/teTeX/bin ]; then
+	path=($path /usr/local/teTeX/bin)
+fi
 
+# EOF

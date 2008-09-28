@@ -36,7 +36,6 @@ if [ -f $ZUSERDIR/zshrc.$SYSTEM ]; then
 fi
 
 # man path
-export MANPATH="/usr/share/man:/usr/X11R6/man:/usr/local/man:/var/qmail/man:$HOME/man:."
+export MANPATH="/usr/share/man:/usr/local/share/man:/usr/X11R6/man:/usr/local/man:/var/qmail/man:$HOME/man:."
 
-
-
+# EOF

@@ -43,7 +43,7 @@ function psgrep () {
     ps -auxww | grep -v grep | grep $* ;;
   darwin)
     echo "USER       PID %CPU %MEM      VSZ    RSS  TT  STAT STARTED      TIME COMMAND"
-    ps -auxww | grep -v grep | grep $* ;; 
+    ps auxww | grep -v grep | grep $* ;; 
   *)
     ps auxw | grep $* ;;
   }
