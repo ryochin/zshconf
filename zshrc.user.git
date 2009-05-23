@@ -1,0 +1,33 @@
+#
+# $URL: svn+ssh://ryo@aquahill.net/home/ryo/svn/zshconf/trunk/zshrc.user $
+# $Id: zshrc.user 12 2008-09-28 09:09:09Z ryo $
+
+echo "Loading $HOME/.zsh/zshrc.user.git"
+
+# git
+alias ggs='git status'
+alias ggd='git diff'
+alias ggdc='git diff --cached'
+alias ggb='git branch'
+alias ggl='git log'
+alias ggc='git checkout'
+
+function _set_env_git_current_branch () {
+    GIT_CURRENT_BRANCH=$( test -e .git && git branch 2> /dev/null | grep '^\*' | cut -b 3- )
+}
+function _update_rprompt () {
+    if [ $GIT_CURRENT_BRANCH ]; then
+	RPROMPT="  %U$GIT_CURRENT_BRANCH%u %D{%Y.%m.%d %a %H:%M:%S}"
+    else
+	RPROMPT="  %D{%Y.%m.%d %a %H:%M:%S}"
+    fi
+}
+function precmd() {
+    _set_env_git_current_branch
+    _update_rprompt
+}
+function chpwd() {
+    _set_env_git_current_branch
+    _update_rprompt
+    ls -lF
+}

@@ -58,7 +58,7 @@ dist: distclean
 		cp -p dot$$i zshconf-r$(REVISION); \
 	done
 
-	for i in aliases completions functions lscolors zshoptions zshrc.bsd zshrc.darwin zshrc.gnu zshrc.user; do \
+	for i in aliases completions functions lscolors zshoptions zshrc.bsd zshrc.darwin zshrc.gnu zshrc.user zshrc.user.git; do \
 		cp -p $$i zshconf-r$(REVISION); \
 	done
 

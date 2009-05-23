@@ -36,7 +36,7 @@ function psgrep () {
     echo "     UID   PID  PPID  C    STIME TTY     TIME CMD"
     ps -ef | grep $* ;;
   gnu)
-    echo "USER       PID %CPU %MEM  SIZE   RSS TTY STAT START   TIME COMMAND"
+    echo "USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND"
     ps auxw | grep -v grep | grep $* ;;
   bsd)
     echo "USER      PID %CPU %MEM   VSZ  RSS  TT  STAT STARTED      TIME COMMAND"
