@@ -107,6 +107,7 @@ alias pdl='perldoc -l'
 alias null='cat /dev/null >'
 alias gd='dirs -v; echo -n "select number: " ; read newdir; cd -"$newdir"'
 alias files='file ./* | egrep -v "(empty|directory|symbolic|Permission denied)" '
+alias xmllint_html='xmllint --html --noout'
 
 # read-only
 #alias mutt='mutt -R'
