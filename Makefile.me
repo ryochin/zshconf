@@ -38,7 +38,7 @@ install:
 		chmod 600 $(ZSHBASE)/.zsh_history; \
 	fi
 
-	for i in aliases completions functions lscolors zshoptions zshrc.bsd zshrc.darwin zshrc.gnu zshrc.user; do \
+	for i in aliases completions functions lscolors zshoptions zshrc.bsd zshrc.darwin zshrc.gnu zshrc.user zshrc.user.git; do \
 		$(INSTALL_DATA) $$i $(ZSHDIR)/$$i; \
 	done
 
