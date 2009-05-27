@@ -218,4 +218,6 @@ function gohome() {
 	chdir $MYHOME
 }
 
-
+function load-git-config() {
+	source ~/.zsh/zshrc.user.git
+}
