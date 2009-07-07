@@ -9,7 +9,7 @@ alias ggs='git status'
 alias ggd='git diff'
 alias ggdc='git diff --cached'
 alias ggb='git branch'
-alias ggl='git log'
+alias ggl='git log --name-status'
 alias ggc='git checkout'
 
 function _set_env_git_current_branch () {
