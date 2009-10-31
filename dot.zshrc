@@ -115,4 +115,7 @@ fi
 if [ -f $ZUSERDIR/zshrc.user ]; then
   source $ZUSERDIR/zshrc.user
 fi
+if [ -f $ZUSERDIR/zshrc.user.git ]; then
+  source $ZUSERDIR/zshrc.user.git
+fi
 

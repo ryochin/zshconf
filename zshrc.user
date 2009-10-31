@@ -44,7 +44,7 @@ fi
 # pager
 export LESSCHARSET=
 if [ -x /usr/local/bin/lv ]; then
-    export PAGER="lv -c"
+    export PAGER="lv"
 elif [ -x /usr/local/bin/jless ]; then
     export PAGER=jless
 else
