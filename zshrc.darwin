@@ -43,4 +43,5 @@ alias ipfw_ls='ipfw -at list'
 alias fcd='cd `fcd.sh`'
 
 alias delds="find . -name '.DS_Store' | xargs rm -f"
+alias low='nice -10'
 

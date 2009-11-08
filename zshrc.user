@@ -108,6 +108,7 @@ alias null='cat /dev/null >'
 alias gd='dirs -v; echo -n "select number: " ; read newdir; cd -"$newdir"'
 alias files='file ./* | egrep -v "(empty|directory|symbolic|Permission denied)" '
 alias xmllint_html='xmllint --html --noout'
+alias iccenv='AR=xiar CC=icc CXX=icpc CFLAGS="-O3 -unroll4 -ipo -fp-model precise -no-gcc -restrict -xSSSE3" CXXFLAGS="-O3 -unroll4 -ipo -fp-model precise -no-gcc -restrict -xSSSE3"'
 
 # read-only
 #alias mutt='mutt -R'
