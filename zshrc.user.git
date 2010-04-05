@@ -1,6 +1,4 @@
 #
-# $URL: svn+ssh://ryo@aquahill.net/home/ryo/svn/zshconf/trunk/zshrc.user $
-# $Id: zshrc.user 12 2008-09-28 09:09:09Z ryo $
 
 echo "Loading $HOME/.zsh/zshrc.user.git"
 

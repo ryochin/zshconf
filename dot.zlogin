@@ -1,6 +1,4 @@
 #
-# $URL$
-# $Id$
 
 echo "Loading $HOME/.zlogin"
 
@@ -29,7 +27,7 @@ echo '------------------------'
 echo "Welcome to '${HOST}' !"
 #echo "\t-> OS is `uname -rs`."
 perl -e 'chomp($u=qx(uname -rs));printf "\t-> OS is %s.\n", $u'
-perl -e '($t=qx(ac))=~s/^.*?(\d+?)\..*?$/$1/;printf"\t-> Your total login time is about %d day %d hrs.\n",int($t/24),int($t%24)'
+#perl -e '($t=qx(ac))=~s/^.*?(\d+?)\..*?$/$1/;printf"\t-> Your total login time is about %d day %d hrs.\n",int($t/24),int($t%24)'
 echo '------------------------'
 who | sort
 echo '------------------------'

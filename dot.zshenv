@@ -1,6 +1,4 @@
 #
-# $URL$
-# $Id$
 
 # comment for rsync auto login.
 #echo "Loading $HOME/.zshenv"

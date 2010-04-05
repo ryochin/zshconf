@@ -1,6 +1,4 @@
 #
-# $URL$
-# $Id$
 
 echo "Loading $HOME/.zlogout"
 

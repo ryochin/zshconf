@@ -1,6 +1,4 @@
 #
-# $URL$
-# $Id$
 
 echo "Loading $HOME/.zsh/zshrc.gnu"
 
@@ -12,3 +10,9 @@ alias iptables_ls='iptables -L -vn --line-numbers'
 alias md5=md5sum
 
 alias low='ionice -c2 -n7 nice -10'
+
+# go
+export GOROOT=${HOME}/work/go
+export GOOS=linux
+export GOARCH=386
+

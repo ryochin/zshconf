@@ -1,6 +1,4 @@
 #
-# $URL$
-# $Id$
 
 echo "Loading $HOME/.zprofile"
 
@@ -13,6 +11,7 @@ case $OSTYPE {
   osf*)		export SYSTEM=dec ;;
   linux*)	export SYSTEM=gnu ;;
   freebsd*)	export SYSTEM=bsd ;;
+  openbsd*)	export SYSTEM=bsd ;;
   darwin*)	export SYSTEM=darwin ;;    # MacOSX
 }
 
