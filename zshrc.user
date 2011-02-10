@@ -29,8 +29,8 @@ fi
 export JAVA_HOME=/usr/java
 export EC2_HOME=/usr/local/ec2/apitools
 export PATH=$PATH:$EC2_HOME/bin
-export EC2_PRIVATE_KEY=~/.ec2/pk-xxxxxxxx.pem
-export EC2_CERT=~/.ec2/cert-xxxxxxxx.pem
+#export EC2_PRIVATE_KEY=~/.ec2/pk.pem
+#export EC2_CERT=~/.ec2/cert.pem
 
 # mysql prompt
 export MYSQL_PS1="\u@`hostname -s`[\d]> "
@@ -39,8 +39,9 @@ export MYSQL_PS1="\u@`hostname -s`[\d]> "
 function chpwd() { ls -lF }
 
 # editor
-if [ -x /usr/bin/ee ]; then
+if [ -x /usr/local/bin/ee ]; then
     export EDITOR=ee
+    alias ee=ee
 else
     export EDITOR=vi
     alias ee='nano -w'

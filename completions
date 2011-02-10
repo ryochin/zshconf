@@ -250,7 +250,7 @@ compctl -K _sshhosts \
 compctl -k '(asn1parse ca ciphers crl crl2pkcs7 dgst dh dhparam dsa dsaparam \
 	enc errstr gendh gendsa genrsa nseq passwd pkcs12 pkcs7 pkcs8 \
 	rand req rsa rsautl s_client s_server s_time sess_id smime speed \
-	spkac verify version x509)' openssl
+	spkac verify version x509)' -g '*(-/) *.pem *.crt *.key *.pub' openssl
 
 #----------------------
 # screen

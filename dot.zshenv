@@ -110,4 +110,9 @@ if [ -x /usr/local/teTeX/bin ]; then
 	path=($path /usr/local/teTeX/bin)
 fi
 
+# java
+if [ -x /usr/java/bin ]; then
+	path=($path /usr/java/bin)
+fi
+
 # EOF

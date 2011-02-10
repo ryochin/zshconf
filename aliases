@@ -4,7 +4,8 @@ echo "Loading $HOME/.zsh/aliases"
 
 alias dir='ls -lF'
 alias df='df -h'
-alias du='du -ackh'
+#alias du='du -ackh'
+alias du='du -kh'
 alias diff='diff -NBaur'
 alias scp='scp -p'
 alias lynx='lynx -cfg ~/.lynxrc'
