@@ -32,6 +32,9 @@ export PATH=$PATH:$EC2_HOME/bin
 #export EC2_PRIVATE_KEY=~/.ec2/pk.pem
 #export EC2_CERT=~/.ec2/cert.pem
 
+# Android
+export PATH=$PATH:/Developer/android-sdk-mac_x86/tools
+
 # mysql prompt
 export MYSQL_PS1="\u@`hostname -s`[\d]> "
 
@@ -103,6 +106,7 @@ alias cdcontrol='cdcontrol -f /dev/acd0a'
 alias lock='lock -np'
 alias ntop='ntop -r1 -n'
 #alias trafshow='trafshow -r1 -n'
+alias shredder='shred -u -n 7'
 
 # perl
 alias pd=perldoc
