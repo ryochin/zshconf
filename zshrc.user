@@ -42,7 +42,7 @@ export MYSQL_PS1="\u@`hostname -s`[\d]> "
 function chpwd() { ls -lF }
 
 # editor
-if [ -x /usr/local/bin/ee ]; then
+if [ -x /usr/local/bin/ee -o -x /usr/bin/ee ]; then
     export EDITOR=ee
     alias ee=ee
 else
@@ -99,7 +99,7 @@ alias tm=tmore
 # add options
 alias gg='grep -an -B 5 -A 5'
 alias tt='tail -36'
-alias pa='ps -aux'
+alias pa='ps aux'
 alias ping='ping -c 5'
 alias ftp='ncftp -L'
 alias cdcontrol='cdcontrol -f /dev/acd0a'
@@ -107,6 +107,7 @@ alias lock='lock -np'
 alias ntop='ntop -r1 -n'
 #alias trafshow='trafshow -r1 -n'
 alias shredder='shred -u -n 7'
+alias htop='htop -d 10'
 
 # perl
 alias pd=perldoc

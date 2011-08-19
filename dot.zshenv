@@ -115,4 +115,10 @@ if [ -x /usr/java/bin ]; then
 	path=($path /usr/java/bin)
 fi
 
+# squid
+if [ -x /usr/local/squid ]; then
+	path=($path /usr/local/squid/bin /usr/local/squid/sbin /usr/local/squid/libexec)
+	manpath=($manpath /usr/local/squid/share/man)
+fi
+
 # EOF

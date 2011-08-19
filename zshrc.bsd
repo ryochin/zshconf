@@ -4,14 +4,10 @@ echo "Loading $HOME/.zsh/zshrc.bsd"
 
 path=($path /stand /rescue)
 
-# ls
-if [ -x /usr/local/bin/gls ]; then
-    alias ls='/usr/local/bin/gls --color'
-    function chpwd() { /usr/local/bin/gls --color -lF }
-fi
-
 # for FreeBSD 5.x
 alias /entropy='cd /etc'
+
+alias ls='/bin/ls -G'
 
 alias tf='tail -0 -F'
 alias top='top -I -s 1 -o cpu'
