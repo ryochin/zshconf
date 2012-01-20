@@ -2,9 +2,6 @@
 
 echo "Loading $HOME/.zlogin"
 
-# set prompt (see .zsh/zshrc.user)
-prompt 5
-
 # clean this display up
 clear
 

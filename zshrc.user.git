@@ -5,19 +5,22 @@ echo "Loading $HOME/.zsh/zshrc.user.git"
 # git
 alias ggs='git status'
 alias ggd='git diff'
+alias ggdw='git diff -w --word-diff=color'
 alias ggdc='git diff --cached'
+alias ggdcw='git diff --cached -w --word-diff=color'
 alias ggb='git branch'
 alias ggl='git log --name-status'
 alias ggc='git checkout'
+alias ggg='git grep -ni'
 
 function _set_env_git_current_branch () {
     GIT_CURRENT_BRANCH=$( test -e .git && git branch 2> /dev/null | grep '^\*' | cut -b 3- )
 }
 function _update_rprompt () {
     if [ $GIT_CURRENT_BRANCH ]; then
-	RPROMPT="  %U$GIT_CURRENT_BRANCH%u %D{%Y.%m.%d %a %H:%M:%S}"
+	RPROMPT="  %U$GIT_CURRENT_BRANCH%u "$RPROMPT_DEFAULT
     else
-	RPROMPT="  %D{%Y.%m.%d %a %H:%M:%S}"
+	RPROMPT=$RPROMPT_DEFAULT
     fi
 }
 function precmd() {

@@ -5,37 +5,19 @@
 
 ### env
 
-# prompt
+# default prompt
 
-#PROMPT="%n@%l'%U%m%u[`jobcount()`]:%4~%# "
-PROMPT="%n@%l'%U%m%u[0]:%4~%# "
-
-autoload colors
-colors
-#PROMPT="%B%n%b@%l'%U%m%u[0]:%4~%{${fg[blue]}%}%#%{${reset_color}%} "
-
-RPROMPT='   %D{%Y.%m.%d %a %H:%M:%S}'
-
-#SPROMPT='zsh: correct '\''%R'\'' to '\''%r'\'' [nyae]? '
-SPROMPT='zsh: replace '\''%R'\'' to '\''%r'\'' ? [Yes/No/Abort/Edit] '
-
-# root attention.
 if [ $UID = 0 ]; then
-	PROMPT="%BROOT%b@%l'%U%m%u[0]:%4~%# "
-#                     %n@%l'%U%m%u[0]:%4~%#
+	PROMPT="%BROOT%b@%l'%U%m%u %4~ %# "
+else
+	PROMPT="%n@%l'%U%m%u: %4~ %# "
 fi
 
-# set default
-PROMPT_DEFAULT="$PROMPT"
-RPROMPT_DEFAULT="$RPROMPT"
-
-# for X client
-#DISPLAY="192.168.0.210:0.0"
+RPROMPT='   %D{%Y.%m.%d %a %H:%M:%S}'
+SPROMPT='zsh: replace '\''%R'\'' to '\''%r'\'' ? [Yes/No/Abort/Edit] '
 
 # term
-#TERM=vt100
-TERM=xterm
-#TERM=xterm-color
+TERM=xterm-color
 
 # mail
 #MAILPATH=$HOME/Maildir

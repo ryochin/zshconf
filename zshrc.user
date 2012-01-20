@@ -2,6 +2,27 @@
 
 echo "Loading $HOME/.zsh/zshrc.user"
 
+if [ $TERM_PROGRAM = "iTerm.app" ] ;then
+	local C_RED=$'%{\e[38;5;1m%}'
+	local C_GREEN=$'%{\e[38;5;2m%}'
+	local C_YELLOW=$'%{\e[38;5;3m%}'
+	local C_BLUE=$'%{\e[38;5;4m%}'
+	local C_CYAN=$'%{\e[38;5;6m%}'
+	local C_GRAY=$'%{\e[38;5;8m%}'
+	
+	if [ $UID = 0 ]; then
+		local C_NORMAL=$C_RED
+	else
+		local C_NORMAL=$C_GREEN
+	fi
+	local C_DEFAULT=$'%{\e[m%}'
+fi
+
+PROMPT_DEFAULT=${C_NORMAL}"%n@%l'"${C_DEFAULT}${C_YELLOW}"%U%m%u"${C_DEFAULT}${C_CYAN}" %4~ "${C_DEFAULT}${C_NORMAL}"%# "${C_DEFAULT}
+export PROMPT=$PROMPT_DEFAULT
+RPROMPT_DEFAULT=${C_GRAY}"%D{%Y.%m.%d %a %H:%M:%S}"${C_DEFAULT}
+export RPROMPT="  "$RPROMPT_DEFAULT
+
 # system
 #umask 027
 
@@ -171,30 +192,6 @@ function help(){
 function jobcount() {
 #        jobs|wc -l| awk '{print $1}'
 	echo -n `jobs | wc -l | awk '{print $1}'`
-}
-
-# set prompt
-function prompt() {
-    case $1 in
-	1) PROMPT="%n@%l'%m:%~%# " ;;  # default
-        2) PROMPT='%n@%m:%# ' ;;    # pwd simple mode
-	3) PROMPT='$ ' ;;
-	4) PROMPT='%n@%m %# ' ;;
-	5) PROMPT="%n@%l'%U%m%u[`jobcount`]:%4~%# " ;;
-	*) PROMPT="$PROMPT_DEFAULT" ;;
-    esac
-}
-
-function rprompt() {
-    case $1 in
-	0) RPROMPT='' ;;   # nothing
-	1) RPROMPT='%B[%(?.%!.ERROR:%?)] (%U%D%u %D{%a %H:%M:%S %p})%b' ;;
-	2) RPROMPT='%B(%D %D{%a %H:%M:%S})%b' ;;
-	3) RPROMPT='%D{%H:%M:%S %p}' ;;
-	4) RPROMPT='[%(?.%!.ERR:%?)] %D{%H:%M:%S %p}' ;;
-        5) RPROMPT='[%~] %D{%H:%M:%S %p}' ;;
-	*) RPROMPT="$RPROMPT_DEFAULT" ;;
-    esac
 }
 
 functions crontab () {
