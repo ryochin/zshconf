@@ -28,6 +28,7 @@ alias tf='tail -0 -F'
 # open with
 alias mi='open -a mi'
 alias kod='open -a Kod'
+alias coda='open -a "Coda 2"'
 alias jedit='open -a /Applications/Jedit\ X\ Folder/Jedit\ X.app'
 alias preview='open -a /Applications/Preview.app'
 alias gc='open -a /Applications/GraphicConverter'

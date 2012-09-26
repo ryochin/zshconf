@@ -2,7 +2,7 @@
 
 echo "Loading $HOME/.zsh/zshrc.user"
 
-if [ $TERM_PROGRAM = "iTerm.app" ] ;then
+#if [ $TERM_PROGRAM = "iTerm.app" ] ;then
 	local C_RED=$'%{\e[38;5;1m%}'
 	local C_GREEN=$'%{\e[38;5;2m%}'
 	local C_YELLOW=$'%{\e[38;5;3m%}'
@@ -16,7 +16,7 @@ if [ $TERM_PROGRAM = "iTerm.app" ] ;then
 		local C_NORMAL=$C_GREEN
 	fi
 	local C_DEFAULT=$'%{\e[m%}'
-fi
+#fi
 
 PROMPT_DEFAULT=${C_NORMAL}"%n@%l'"${C_DEFAULT}${C_YELLOW}"%U%m%u"${C_DEFAULT}${C_CYAN}" %4~ "${C_DEFAULT}${C_NORMAL}"%# "${C_DEFAULT}
 export PROMPT=$PROMPT_DEFAULT
@@ -73,7 +73,7 @@ fi
 
 # pager
 export LESSCHARSET=
-if [ -x /usr/local/bin/lv ]; then
+if [ -x /usr/local/bin/lv -o -x ~/bin/lv ]; then
     export PAGER="lv"
 elif [ -x /usr/local/bin/jless ]; then
     export PAGER=jless
@@ -90,6 +90,11 @@ alias ltr='ls -lFAotr'
 alias lss='ls -lF | sort -n +4'
 alias lssr='ls -lF | sort -nr +4'
 alias d=dir
+
+# diff
+if [ -x /usr/local/bin/colordiff ]; then
+    alias diff="/usr/local/bin/colordiff -NBaur"
+fi
 
 # svn
 export SVN_EDITOR=$EDITOR

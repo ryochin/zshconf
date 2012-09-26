@@ -2,6 +2,16 @@
 
 echo "Loading $HOME/.zsh/zshrc.user.git"
 
+#if [ $TERM_PROGRAM = "iTerm.app" ] ;then
+	local C_RED=$'%{\e[38;5;1m%}'
+	local C_GREEN=$'%{\e[38;5;2m%}'
+	local C_YELLOW=$'%{\e[38;5;3m%}'
+	local C_BLUE=$'%{\e[38;5;4m%}'
+	local C_CYAN=$'%{\e[38;5;6m%}'
+	local C_GRAY=$'%{\e[38;5;8m%}'
+	local C_DEFAULT=$'%{\e[m%}'
+#fi
+
 # git
 alias ggs='git status'
 alias ggd='git diff'
@@ -10,7 +20,7 @@ alias ggdc='git diff --cached'
 alias ggdcw='git diff --cached -w --word-diff=color'
 alias ggb='git branch'
 alias ggl='git log --name-status'
-alias ggc='git checkout'
+#alias ggc='git checkout'
 alias ggg='git grep -ni'
 
 function _set_env_git_current_branch () {
@@ -18,7 +28,7 @@ function _set_env_git_current_branch () {
 }
 function _update_rprompt () {
     if [ $GIT_CURRENT_BRANCH ]; then
-	RPROMPT="  %U$GIT_CURRENT_BRANCH%u "$RPROMPT_DEFAULT
+	RPROMPT="  %U${C_YELLOW}$GIT_CURRENT_BRANCH${C_DEFAULT}%u "$RPROMPT_DEFAULT
     else
 	RPROMPT=$RPROMPT_DEFAULT
     fi

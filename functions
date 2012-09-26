@@ -369,9 +369,8 @@ function renicegrep () {
 		*) echo "usage: $0 <name>" >& 2; return ;;
 	esac
 
-	pid=`ps -aux | grep -i $1 | grep -v grep | awk '{print $2}'`
-#	echo "pid = $pid"
-	if [ $pid > 0 ]; then
+	pid=`ps aux | grep -i $1 | grep -v grep | awk '{print $2}'`
+	if [ $pid -gt 0 ]; then
 		sudo renice -20 $pid
 	fi
 }
