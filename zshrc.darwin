@@ -2,7 +2,7 @@
 
 echo "Loading $HOME/.zsh/zshrc.darwin"
 
-path=($path ~/bin /Applications /Developer/Applications/Utilities /Developer/Tools /System/Library/CoreServices/)
+path=($path ~/bin /Applications /Developer/Applications/Utilities /Developer/Tools /System/Library/CoreServices)
 
 export JAVA_HOME=/Library/Java/Home
 #export ARCHFLAGS="-arch x86_64 -arch i386 -arch ppc"
@@ -12,15 +12,31 @@ export ARCHFLAGS="-arch x86_64 -arch i386"
 path=($path /opt/local/bin /opt/local/sbin)
 manpath=($manpath /opt/share/man /opt/local/share/man)
 
+# for homebrew
+if [ -e /usr/local/opt/ruby/bin ]; then
+    path=($path /usr/local/opt/ruby/bin)
+fi
+if [ -e /usr/local/opt/perl518/bin ]; then
+    path=($path /usr/local/opt/perl518/bin)
+fi
+
 # ls
 if [ -x /opt/local/bin/gls ]; then
     alias ls='/opt/local/bin/gls --color'
     function chpwd() { /opt/local/bin/gls --color -lF }
+elif [ -x /usr/local/bin/gls ]; then
+    alias ls='/usr/local/bin/gls --color'
+    function chpwd() { /usr/local/bin/gls --color -lF }
 fi
 
 # emacs
 if [ -e /Applications/Emacs.app ]; then
     emacs='open -a Emacs.app'
+fi
+
+# tex
+if [ -e /usr/texbin ]; then
+    path=($path /usr/texbin)
 fi
 
 alias tf='tail -0 -F'

@@ -29,9 +29,11 @@ export PERLDOC_PAGER=${PAGER}
 
 ### path setting
 
-path=(/bin /sbin /usr/bin /usr/sbin /usr/local/bin /usr/local/sbin)
-path=($path /usr/libexec /usr/local/libexec)
 path=($path $HOME/bin)
+
+path=($path /usr/local/bin /usr/local/sbin /usr/local/libexec)
+path=($path /usr/bin /usr/sbin /usr/libexec)
+path=($path /bin /sbin)
 
 path=($path /usr/local/sysutil)
 path=($path /usr/ucb /usr/etc)	# for SunOS

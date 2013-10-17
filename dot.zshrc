@@ -2,6 +2,14 @@
 
 echo "Loading $HOME/.zshrc"
 
+### style
+
+zstyle ':completion:*' verbose yes
+zstyle ':completion:*:descriptions' format '%B%d%b'
+zstyle ':completion:*:messages' format '%d'
+zstyle ':completion:*:warnings' format 'No matches for: %d'
+zstyle ':completion:*' group-name ''
+
 ### shell variables
 
 # zsh が使うシェル変数のうちヒストリ（履歴機能）に関するもの

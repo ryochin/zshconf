@@ -31,6 +31,7 @@ export CVSROOT=$HOME/cvs
 export SVNROOT=$HOME/svn
 export ACK_COLOR_MATCH='underline white'
 export GZIP='-v9N'
+export NET_FTPSERVER_NO_SLEEP=1
 
 # lang
 export LANG=en_US.UTF-8
@@ -54,7 +55,7 @@ export PATH=$PATH:$EC2_HOME/bin
 #export EC2_CERT=~/.ec2/cert.pem
 
 # Android
-export PATH=$PATH:/Developer/android-sdk-mac_x86/tools
+export PATH=$PATH:/Applications/eclipse/android-sdk-macosx/tools
 
 # mysql prompt
 export MYSQL_PS1="\u@`hostname -s`[\d]> "
@@ -102,6 +103,14 @@ alias ss='svn status'
 alias sd='svn diff'
 alias svn-addprops="svn propset svn:keywords 'Date Author URL Id Revision'"
 
+# git
+alias git-branchlist='(for i in `git branch | colrm 1 2` ; do echo `git log --date=iso8601 -n 1 --pretty="format:[%ai] %h" $i` $i ; done) | sort '
+
+# ghq
+fpath=(ghq/zsh $fpath)
+autoload -U ghq
+autoload -U compinit; compinit
+
 # command
 alias g='grep'
 alias psg=psgrep
@@ -117,6 +126,7 @@ alias n=nmore
 alias s=sort
 alias t=tail
 alias m=$PAGER
+alias o=open
 
 # alias
 alias root='su -l'
