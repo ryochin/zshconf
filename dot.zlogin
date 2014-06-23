@@ -34,10 +34,6 @@ echo '------------------------'
 #  from -c
 #fi
 
-#if [ -x `which subject` ]; then
-#  subject -c
-#fi
-
 # launch ssh-agent1
 #eval `ssh-agent`
 #ssh-add ~/.ssh/id_dsa
