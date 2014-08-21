@@ -2,7 +2,7 @@
 
 echo "Loading $HOME/.zsh/zshrc.bsd"
 
-path=($path /stand /rescue)
+path=($path /stand /rescue /usr/local/sysutil)
 
 # for FreeBSD 5.x
 alias /entropy='cd /etc'
